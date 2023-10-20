@@ -11,7 +11,7 @@ void main() {
 class MyApp extends StatelessWidget {
   final user = "Name";
 
-  const MyApp({super.key});
+  const MyApp();
 
   @override
   Widget build(BuildContext context) {

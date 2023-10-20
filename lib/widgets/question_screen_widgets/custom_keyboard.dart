@@ -6,7 +6,6 @@ class CustomKeyboard extends StatelessWidget {
   final int? selectedNumber;
 
   const CustomKeyboard({
-    super.key, 
     required this.onNumberPressed,
     required this.onSubmitPressed,
     required this.selectedNumber,

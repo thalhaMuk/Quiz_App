@@ -9,7 +9,6 @@ class CustomAppBar extends StatelessWidget {
   final Function onQuitGame;
 
   const CustomAppBar({
-    super.key, 
     required this.user,
     required this.quizNumber,
     required this.userScore,
