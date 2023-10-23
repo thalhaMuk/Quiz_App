@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../main.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String user;
@@ -6,17 +8,16 @@ class CustomAppBar extends StatelessWidget {
   final int userScore;
   final int wrongAnswersCount;
   final int correctAnswersCount;
-  final Function onQuitGame;
+  final User? firebaseUser;
 
-  const CustomAppBar({
-    super.key, 
-    required this.user,
-    required this.quizNumber,
-    required this.userScore,
-    required this.wrongAnswersCount,
-    required this.correctAnswersCount,
-    required this.onQuitGame,
-  });
+  const CustomAppBar(
+      {super.key,
+      required this.user,
+      required this.quizNumber,
+      required this.userScore,
+      required this.wrongAnswersCount,
+      required this.correctAnswersCount,
+      this.firebaseUser});
 
   @override
   Widget build(BuildContext context) {
@@ -47,22 +48,31 @@ class CustomAppBar extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.arrow_back_outlined),
                         onPressed: () {
-                          onQuitGame();
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MyApp(firebaseUser: firebaseUser),
+                            ),
+                          );
                         },
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  RichText(
-                    text: TextSpan(
-                      text: "Welcome ",
-                      style: const TextStyle(fontSize: 30),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: "$user!",
-                          style: const TextStyle(fontWeight: FontWeight.w900),
-                        ),
-                      ],
+                  FittedBox(
+                    fit: BoxFit.cover,
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Welcome ",
+                        style: const TextStyle(fontSize: 30),
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: "$user!",
+                            style: const TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

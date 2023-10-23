@@ -1,8 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../main.dart';
+import '../screens/summary_screen.dart';
 
 class DialogHelper {
-  static void showResultDialog(BuildContext context, int userScore, int correctAnswersCount, int wrongAnswersCount, Function restartGame) {
+  static void showResultDialog(
+      BuildContext context,
+      int userScore,
+      int correctAnswersCount,
+      int wrongAnswersCount,
+      Function restartGame,
+      User? user) {
     showDialog(
       context: context,
       builder: (context) {
@@ -15,7 +23,8 @@ class DialogHelper {
               child: Column(
                 children: [
                   Text("User Score: $userScore"),
-                  Text("Total Questions Answered: ${correctAnswersCount + wrongAnswersCount}"),
+                  Text(
+                      "Total Questions Answered: ${correctAnswersCount + wrongAnswersCount}"),
                   Text("Correct Answers: $correctAnswersCount"),
                   Text("Incorrect Answers: $wrongAnswersCount"),
                 ],
@@ -32,10 +41,25 @@ class DialogHelper {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SummaryScreen(firebaseUser: user),
+                  ),
+                );
               },
-              child: const Text("Close App"),
+              child: const Text("View Summary"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyApp(firebaseUser: user),
+                  ),
+                );
+              },
+              child: const Text("End Game"),
             ),
           ],
         );
@@ -63,13 +87,13 @@ class DialogHelper {
     );
   }
 
-  static void showQuitGameDialog(BuildContext context, Function quitGame) {
+  static void showQuitGameDialog(BuildContext context, User? user) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Quit Game?'),
-          content: const Text('Are you sure you want to quit the game?'),
+          title: const Text('End Game?'),
+          content: const Text('Are you sure you want to end the game?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -79,11 +103,14 @@ class DialogHelper {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                quitGame();
-                SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyApp(firebaseUser: user),
+                  ),
+                );
               },
-              child: const Text('Quit'),
+              child: const Text('End'),
             ),
           ],
         );

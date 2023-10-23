@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiver/async.dart';
 import '../models/question_data.dart';
@@ -5,9 +6,12 @@ import '../services/api_service.dart';
 import '../helpers/dialog_helper.dart';
 import '../widgets/question_screen_widgets/custom_keyboard.dart';
 import '../widgets/question_screen_widgets/question_screen_app_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({Key? key}) : super(key: key);
+  final User? user;
+
+  const QuestionScreen({Key? key, this.user}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -19,7 +23,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
   int _userScore = 0;
   int _wrongAnswersCount = 0;
   int _correctAnswersCount = 0;
-  final String _user = 'User'; // To be used in phase 2
   final int _timerSeconds = 20;
   late CountdownTimer _timer;
   int? _selectedNumber;
@@ -33,11 +36,29 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _loadQuestion();
   }
 
+  Future<void> _saveAnswerHistory(int selectedAnswer) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance.collection('answerHistory').add({
+          'userId': user.uid,
+          'question': _questionData.question,
+          'selectedAnswer': selectedAnswer,
+          'isCorrect': selectedAnswer == _questionData.solution,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      } catch (e) {
+        // ignore: use_build_context_synchronously
+        DialogHelper.showErrorDialog(context, 'Error saving answer history.');
+      }
+    }
+  }
+
   void _showResultDialog() {
     if (!_timerExpired) {
       _timerExpired = true;
       DialogHelper.showResultDialog(context, _userScore, _correctAnswersCount,
-          _wrongAnswersCount, _restartGame);
+          _wrongAnswersCount, _restartGame, widget.user);
     }
   }
 
@@ -64,7 +85,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
       _correctAnswersCount = 0;
       _wrongAnswersCount = 0;
       _isTimerRunning = false;
-      _timerExpired = false; 
+      _timerExpired = false;
     });
 
     if (_isTimerRunning) {
@@ -98,11 +119,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
     } else {
       _wrongAnswersCount++;
     }
+    widget.user ?? _saveAnswerHistory(selectedAnswer);
     _loadQuestion();
-  }
-
-  void _quitGame() {
-    DialogHelper.showQuitGameDialog(context, _restartGame);
   }
 
   void _onNumberPressed(int number) {
@@ -125,6 +143,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String user = widget.user?.displayName ?? 'User';
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -143,12 +163,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
               Column(
                 children: [
                   CustomAppBar(
-                    user: _user,
+                    user: user.split(' ')[0],
                     quizNumber: _correctAnswersCount + _wrongAnswersCount + 1,
                     userScore: _userScore,
                     wrongAnswersCount: _wrongAnswersCount,
                     correctAnswersCount: _correctAnswersCount,
-                    onQuitGame: _quitGame,
+                    firebaseUser: widget.user,
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),

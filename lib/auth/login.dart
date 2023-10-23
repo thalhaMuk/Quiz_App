@@ -1,0 +1,46 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quiz_app/main.dart';
+import '../helpers/dialog_helper.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class Login {
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  static Future<UserCredential> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    return await _auth.signInWithCredential(credential);
+  }
+
+  void signIn(BuildContext context) async {
+    try {
+      showDialog(
+          context: context,
+          builder: (context) => const Center(
+              child: SizedBox(
+                  height: 30, width: 30, child: CircularProgressIndicator())),
+          barrierDismissible: false);
+      UserCredential userCredential = await signInWithGoogle();
+      User? user = userCredential.user;
+      if (user != null) {
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MyApp(firebaseUser: user),
+          ),
+        );
+      }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      DialogHelper.showErrorDialog(
+          context, 'Failed to sign in. Please try again later. $e');
+    }
+  }
+}
