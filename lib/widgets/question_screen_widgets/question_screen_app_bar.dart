@@ -19,6 +19,7 @@ class CustomAppBar extends StatelessWidget {
       required this.correctAnswersCount,
       this.firebaseUser});
 
+
   @override
   Widget build(BuildContext context) {
     return Material(
