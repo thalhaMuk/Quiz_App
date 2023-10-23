@@ -181,7 +181,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                               const BorderRadius.all(Radius.circular(30)),
                           valueColor:
                               const AlwaysStoppedAnimation<Color>(Colors.blue),
-                          value: 1 - (_remainingTime / _timerSeconds),
+                          value: _remainingTime / _timerSeconds,
                         ),
                         Align(
                           alignment: Alignment.topRight,
