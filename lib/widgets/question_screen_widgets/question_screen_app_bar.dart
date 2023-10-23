@@ -9,16 +9,18 @@ class CustomAppBar extends StatelessWidget {
   final int wrongAnswersCount;
   final int correctAnswersCount;
   final User? firebaseUser;
+  final VoidCallback onEndGamePressed;
 
-  const CustomAppBar(
-      {super.key,
-      required this.user,
-      required this.quizNumber,
-      required this.userScore,
-      required this.wrongAnswersCount,
-      required this.correctAnswersCount,
-      this.firebaseUser});
-
+  const CustomAppBar({
+    Key? key,
+    required this.user,
+    required this.quizNumber,
+    required this.userScore,
+    required this.wrongAnswersCount,
+    required this.correctAnswersCount,
+    required this.onEndGamePressed,
+    this.firebaseUser,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,28 +39,26 @@ class CustomAppBar extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           child: Column(
             children: [
               Row(
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back_outlined),
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  MyApp(firebaseUser: firebaseUser),
-                            ),
-                          );
-                        },
-                        color: Colors.white,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 7),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_outlined),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                MyApp(firebaseUser: firebaseUser),
+                          ),
+                        );
+                      },
+                      color: Colors.white,
                     ),
                   ),
                   FittedBox(
@@ -66,7 +66,7 @@ class CustomAppBar extends StatelessWidget {
                     child: RichText(
                       text: TextSpan(
                         text: "Welcome ",
-                        style: const TextStyle(fontSize: 30),
+                        style: const TextStyle(fontSize: 25),
                         children: <TextSpan>[
                           TextSpan(
                             text: "$user!",
@@ -78,7 +78,6 @@ class CustomAppBar extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -88,10 +87,10 @@ class CustomAppBar extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
-                            text: "$quizNumber",
-                            style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w900)),
+                          text: "$quizNumber",
+                          style: const TextStyle(
+                              color: Colors.green, fontWeight: FontWeight.w900),
+                        ),
                       ],
                     ),
                   ),
@@ -101,16 +100,16 @@ class CustomAppBar extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
-                            text: "$userScore",
-                            style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w900)),
+                          text: "$userScore",
+                          style: const TextStyle(
+                              color: Colors.green, fontWeight: FontWeight.w900),
+                        ),
                       ],
                     ),
-                  ),
+                  )
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -120,10 +119,10 @@ class CustomAppBar extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
-                            text: "$wrongAnswersCount",
-                            style: const TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w900)),
+                          text: "$wrongAnswersCount",
+                          style: const TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.w900),
+                        ),
                       ],
                     ),
                   ),
@@ -133,14 +132,21 @@ class CustomAppBar extends StatelessWidget {
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
-                            text: "$correctAnswersCount",
-                            style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w900)),
+                          text: "$correctAnswersCount",
+                          style: const TextStyle(
+                              color: Colors.green, fontWeight: FontWeight.w900),
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
+              ),
+              ElevatedButton(
+                onPressed: onEndGamePressed,
+                child: const Text(
+                  'End Game',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

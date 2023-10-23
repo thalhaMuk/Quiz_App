@@ -117,4 +117,50 @@ class DialogHelper {
       },
     );
   }
+
+  static void showEndGameDialog(BuildContext context, User? user, userScore,
+      correctAnswersCount, wrongAnswersCount) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Game Over'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Score: $userScore'),
+              Text('Correct Answers: $correctAnswersCount'),
+              Text('Wrong Answers: $wrongAnswersCount'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyApp(firebaseUser: user),
+                  ),
+                );
+              },
+              child: const Text('Go Back Home'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SummaryScreen(firebaseUser: user),
+                  ),
+                );
+              },
+              child: const Text('Check Summary'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
 }

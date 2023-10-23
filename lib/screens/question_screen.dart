@@ -36,6 +36,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _loadQuestion();
   }
 
+  void _startNewQuestion() {
+    setState(() {
+      _selectedNumber = -1;
+      _isTimerRunning = false;
+    });
+    _loadQuestion();
+  }
+
   Future<void> _saveAnswerHistory(int selectedAnswer) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -48,8 +56,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
           'timestamp': FieldValue.serverTimestamp(),
         });
       } catch (e) {
-        // ignore: use_build_context_synchronously
-        DialogHelper.showErrorDialog(context, 'Error saving answer history.');
+        _showErrorDialog('Error saving answer history.');
       }
     }
   }
@@ -57,8 +64,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
   void _showResultDialog() {
     if (!_timerExpired) {
       _timerExpired = true;
-      DialogHelper.showResultDialog(context, _userScore, _correctAnswersCount,
-          _wrongAnswersCount, _restartGame, widget.user);
+      DialogHelper.showResultDialog(
+        context,
+        _userScore,
+        _correctAnswersCount,
+        _wrongAnswersCount,
+        _restartGame,
+        widget.user,
+      );
     }
   }
 
@@ -107,21 +120,69 @@ class _QuestionScreenState extends State<QuestionScreen> {
         _startTimer();
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      DialogHelper.showErrorDialog(
-          context, 'Failed to load question. Please try again later.');
+      _showErrorDialog('Failed to load question. Please try again later.');
     }
   }
 
+  void _showErrorDialog(String message) {
+    DialogHelper.showErrorDialog(context, message);
+  }
+
+  void _showAnswerResultDialog(bool isCorrect) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(isCorrect ? 'Correct Answer!' : 'Wrong Answer!'),
+          content: isCorrect
+              ? const Text('Congratulations! You answered correctly.')
+              : Column(
+                  children: [
+                    const Text('Oops! Your answer is wrong.'),
+                    const SizedBox(height: 10),
+                    Text('Correct Answer: ${_questionData.solution}'),
+                  ],
+                ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _startNewQuestion();
+              },
+              child: const Text('Next Question'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _timer.cancel();
+                _isTimerRunning = false;
+                DialogHelper.showEndGameDialog(
+                  context,
+                  widget.user,
+                  _userScore,
+                  _correctAnswersCount,
+                  _wrongAnswersCount,
+                );
+              },
+              child: const Text('End Game'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _validateAnswer(int selectedAnswer) {
-    if (selectedAnswer == _questionData.solution) {
+    _timer.cancel();
+    bool isCorrect = selectedAnswer == _questionData.solution;
+    if (isCorrect) {
       _userScore += 10;
       _correctAnswersCount++;
     } else {
       _wrongAnswersCount++;
     }
     widget.user ?? _saveAnswerHistory(selectedAnswer);
-    _loadQuestion();
+    _showAnswerResultDialog(isCorrect);
   }
 
   void _onNumberPressed(int number) {
@@ -170,6 +231,19 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     wrongAnswersCount: _wrongAnswersCount,
                     correctAnswersCount: _correctAnswersCount,
                     firebaseUser: widget.user,
+                    onEndGamePressed: () {
+                      if (_isTimerRunning) {
+                        _timer.cancel();
+                        _isTimerRunning = false;
+                      }
+                      DialogHelper.showEndGameDialog(
+                        context,
+                        widget.user,
+                        _userScore,
+                        _correctAnswersCount,
+                        _wrongAnswersCount,
+                      );
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
@@ -178,10 +252,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
                         LinearProgressIndicator(
                           minHeight: 20,
                           backgroundColor: Colors.grey,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(30)),
-                          valueColor:
-                              const AlwaysStoppedAnimation<Color>(Colors.blue),
+                          borderRadius: const BorderRadius.all(Radius.circular(30)),
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                           value: _remainingTime / _timerSeconds,
                         ),
                         Align(
