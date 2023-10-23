@@ -82,6 +82,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   void _restartGame() {
     setState(() {
       _userScore = 0;
+      _selectedNumber = -1;
       _correctAnswersCount = 0;
       _wrongAnswersCount = 0;
       _isTimerRunning = false;
