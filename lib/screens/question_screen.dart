@@ -1,12 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:quiver/async.dart';
 import '../models/question_data.dart';
 import '../services/api_service.dart';
 import '../helpers/dialog_helper.dart';
 import '../widgets/question_screen_widgets/custom_keyboard.dart';
 import '../widgets/question_screen_widgets/question_screen_app_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class QuestionScreen extends StatefulWidget {
   final User? user;
@@ -14,34 +14,54 @@ class QuestionScreen extends StatefulWidget {
   const QuestionScreen({Key? key, this.user}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _QuestionScreenState createState() => _QuestionScreenState();
+  State<QuestionScreen> createState() => _QuestionScreenState();
 }
 
-class _QuestionScreenState extends State<QuestionScreen> {
+class _QuestionScreenState extends State<QuestionScreen>
+    with WidgetsBindingObserver {
   QuestionData _questionData = QuestionData(question: '', solution: 0);
   int _userScore = 0;
   int _wrongAnswersCount = 0;
   int _correctAnswersCount = 0;
-  final int _timerSeconds = 20;
+  final int _timerSeconds = 20000;
   late CountdownTimer _timer;
   int? _selectedNumber;
   bool _isTimerRunning = false;
-  int _remainingTime = 20;
+  int _remainingTime = 20000;
   bool _timerExpired = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadQuestion();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed && mounted) {
+      _showResumeDialog();
+    } else if (state == AppLifecycleState.paused && _isTimerRunning) {
+      _timer.cancel();
+      setState(() {
+        _isTimerRunning = false;
+      });
+    }
   }
 
   void _startNewQuestion() {
     setState(() {
       _selectedNumber = -1;
       _isTimerRunning = false;
+      _remainingTime = _timerSeconds;
     });
     _loadQuestion();
+  }
+
+  void _showResumeDialog() {
+    DialogHelper.showResumeDialog(context, widget.user, _userScore,
+        _correctAnswersCount, _wrongAnswersCount, _startTimer, _restartGame);
   }
 
   Future<void> _saveAnswerHistory(int selectedAnswer) async {
@@ -76,20 +96,25 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   void _startTimer() {
-    _timer = CountdownTimer(
-      Duration(seconds: _timerSeconds),
-      const Duration(seconds: 1),
-    );
+    if (!_isTimerRunning) {
+      _timer = CountdownTimer(
+        Duration(milliseconds: _remainingTime),
+        const Duration(milliseconds: 1000),
+      );
 
-    _timer.listen((timer) {
-      setState(() {
-        _remainingTime = timer.remaining.inSeconds;
+      _timer.listen((timer) {
+        setState(() {
+          _remainingTime = timer.remaining.inMilliseconds;
+        });
+
+        if (_remainingTime <= 0) {
+          _showResultDialog();
+        }
       });
-
-      if (_remainingTime <= 0) {
-        _showResultDialog();
-      }
-    });
+      setState(() {
+        _isTimerRunning = true;
+      });
+    }
   }
 
   void _restartGame() {
@@ -100,12 +125,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
       _wrongAnswersCount = 0;
       _isTimerRunning = false;
       _timerExpired = false;
+      _remainingTime = _timerSeconds;
     });
 
-    if (_isTimerRunning) {
-      _remainingTime = _timerSeconds;
-      _startTimer();
-    }
     _loadQuestion();
   }
 
@@ -116,7 +138,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
       setState(() {});
 
       if (!_isTimerRunning) {
-        _isTimerRunning = true;
         _startTimer();
       }
     } catch (e) {
@@ -129,46 +150,28 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   void _showAnswerResultDialog(bool isCorrect) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(isCorrect ? 'Correct Answer!' : 'Wrong Answer!'),
-          content: isCorrect
-              ? const Text('Congratulations! You answered correctly.')
-              : Column(
-                  children: [
-                    const Text('Oops! Your answer is wrong.'),
-                    const SizedBox(height: 10),
-                    Text('Correct Answer: ${_questionData.solution}'),
-                  ],
-                ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _startNewQuestion();
-              },
-              child: const Text('Next Question'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _timer.cancel();
-                _isTimerRunning = false;
-                DialogHelper.showEndGameDialog(
-                  context,
-                  widget.user,
-                  _userScore,
-                  _correctAnswersCount,
-                  _wrongAnswersCount,
-                );
-              },
-              child: const Text('End Game'),
-            ),
-          ],
-        );
-      },
+    DialogHelper.showAnswerResultDialog(
+        context,
+        isCorrect,
+        _questionData.solution,
+        _startNewQuestion,
+        _timer,
+        widget.user,
+        _userScore,
+        _correctAnswersCount,
+        _wrongAnswersCount);
+  }
+
+  void onEndGamePressed() {
+    if (_isTimerRunning) {
+      _timer.cancel();
+    }
+    DialogHelper.showEndGameDialog(
+      context,
+      widget.user,
+      _userScore,
+      _correctAnswersCount,
+      _wrongAnswersCount,
     );
   }
 
@@ -200,12 +203,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   void dispose() {
     _timer.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     String user = widget.user?.displayName ?? 'User';
+    String remainingTime = (_remainingTime / 1000).toStringAsFixed(0);
 
     return Scaffold(
       body: Container(
@@ -222,69 +227,54 @@ class _QuestionScreenState extends State<QuestionScreen> {
         child: Center(
           child: Column(
             children: [
-              Column(
-                children: [
-                  CustomAppBar(
-                    user: user.split(' ')[0],
-                    quizNumber: _correctAnswersCount + _wrongAnswersCount + 1,
-                    userScore: _userScore,
-                    wrongAnswersCount: _wrongAnswersCount,
-                    correctAnswersCount: _correctAnswersCount,
-                    firebaseUser: widget.user,
-                    onEndGamePressed: () {
-                      if (_isTimerRunning) {
-                        _timer.cancel();
-                        _isTimerRunning = false;
-                      }
-                      DialogHelper.showEndGameDialog(
-                        context,
-                        widget.user,
-                        _userScore,
-                        _correctAnswersCount,
-                        _wrongAnswersCount,
-                      );
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                    child: Column(
-                      children: [
-                        LinearProgressIndicator(
-                          minHeight: 20,
-                          backgroundColor: Colors.grey,
-                          borderRadius: const BorderRadius.all(Radius.circular(30)),
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-                          value: _remainingTime / _timerSeconds,
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Text(
-                              "Time remaining: $_remainingTime seconds",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
+              CustomAppBar(
+                user: user.split(' ')[0],
+                quizNumber: _correctAnswersCount + _wrongAnswersCount + 1,
+                userScore: _userScore,
+                wrongAnswersCount: _wrongAnswersCount,
+                correctAnswersCount: _correctAnswersCount,
+                firebaseUser: widget.user,
+                onEndGamePressed: onEndGamePressed,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                child: Column(
+                  children: [
+                    LinearProgressIndicator(
+                      minHeight: 20,
+                      backgroundColor: Colors.grey,
+                      borderRadius: const BorderRadius.all(Radius.circular(30)),
+                      valueColor:
+                          const AlwaysStoppedAnimation<Color>(Colors.blue),
+                      value: (_remainingTime / _timerSeconds),
                     ),
-                  ),
-                  _questionData.question.isNotEmpty
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            _questionData.question,
-                            height: 150,
-                            fit: BoxFit.fill,
-                          ),
-                        )
-                      : const CircularProgressIndicator(),
-                  CustomKeyboard(
-                    onNumberPressed: _onNumberPressed,
-                    onSubmitPressed: _onSubmitPressed,
-                    selectedNumber: _selectedNumber,
-                  ),
-                ],
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          "Time remaining: $remainingTime seconds",
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _questionData.question.isNotEmpty
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        _questionData.question,
+                        height: 150,
+                        fit: BoxFit.fill,
+                      ),
+                    )
+                  : const CircularProgressIndicator(),
+              CustomKeyboard(
+                onNumberPressed: _onNumberPressed,
+                onSubmitPressed: _onSubmitPressed,
+                selectedNumber: _selectedNumber,
               ),
             ],
           ),

@@ -5,36 +5,33 @@ import '../screens/summary_screen.dart';
 
 class DialogHelper {
   static void showResultDialog(
-      BuildContext context,
+      BuildContext passedContext,
       int userScore,
       int correctAnswersCount,
       int wrongAnswersCount,
       Function restartGame,
       User? user) {
     showDialog(
-      context: context,
+      context: passedContext,
       builder: (context) {
         return AlertDialog(
           alignment: Alignment.center,
           title: const Center(child: Text("Quiz Result")),
-          content: SizedBox(
-            height: 55,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Text("User Score: $userScore"),
-                  Text(
-                      "Total Questions Answered: ${correctAnswersCount + wrongAnswersCount}"),
-                  Text("Correct Answers: $correctAnswersCount"),
-                  Text("Incorrect Answers: $wrongAnswersCount"),
-                ],
-              ),
-            ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("User Score: $userScore"),
+              Text(
+                  "Total Questions Answered: ${correctAnswersCount + wrongAnswersCount}"),
+              Text("Correct Answers: $correctAnswersCount"),
+              Text("Incorrect Answers: $wrongAnswersCount"),
+            ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
                 restartGame();
               },
               child: const Text("Try Again"),
@@ -44,7 +41,8 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SummaryScreen(firebaseUser: user),
+                    builder: (passedContext) =>
+                        SummaryScreen(firebaseUser: user),
                   ),
                 );
               },
@@ -55,7 +53,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyApp(firebaseUser: user),
+                    builder: (passedContext) => MyApp(firebaseUser: user),
                   ),
                 );
               },
@@ -67,9 +65,9 @@ class DialogHelper {
     );
   }
 
-  static void showErrorDialog(BuildContext context, String errorMessage) {
+  static void showErrorDialog(BuildContext passedContext, String errorMessage) {
     showDialog(
-      context: context,
+      context: passedContext,
       builder: (context) {
         return AlertDialog(
           title: const Text('Error'),
@@ -77,7 +75,7 @@ class DialogHelper {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
               child: const Text('OK'),
             ),
@@ -87,17 +85,17 @@ class DialogHelper {
     );
   }
 
-  static void showQuitGameDialog(BuildContext context, User? user) {
+  static void showQuitGameDialog(BuildContext passedContext, User? user) {
     showDialog(
-      context: context,
+      context: passedContext,
       builder: (context) {
         return AlertDialog(
-          title: const Text('End Game?'),
+          title: const Center(child: Text('End Game?')),
           content: const Text('Are you sure you want to end the game?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
               },
               child: const Text('Cancel'),
             ),
@@ -106,7 +104,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyApp(firebaseUser: user),
+                    builder: (passedContext) => MyApp(firebaseUser: user),
                   ),
                 );
               },
@@ -118,15 +116,15 @@ class DialogHelper {
     );
   }
 
-  static void showEndGameDialog(BuildContext context, User? user, userScore,
-      correctAnswersCount, wrongAnswersCount) {
+  static void showEndGameDialog(BuildContext passedContext, User? user,
+      userScore, correctAnswersCount, wrongAnswersCount) {
     showDialog(
-      context: context,
+      context: passedContext,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Game Over'),
+          title: const Center(child: Text('Game Over')),
           content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Score: $userScore'),
@@ -137,12 +135,8 @@ class DialogHelper {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyApp(firebaseUser: user),
-                  ),
-                );
+                Navigator.pop(context);
+                Navigator.pop(passedContext);
               },
               child: const Text('Go Back Home'),
             ),
@@ -151,7 +145,8 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SummaryScreen(firebaseUser: user),
+                    builder: (passedContext) =>
+                        SummaryScreen(firebaseUser: user),
                   ),
                 );
               },
@@ -162,5 +157,94 @@ class DialogHelper {
       },
     );
   }
-  
+
+  static void showResumeDialog(
+      BuildContext passedContext,
+      User? user,
+      int userScore,
+      int correctAnswersCount,
+      int wrongAnswersCount,
+      Function startTimer,
+      Function restartGame) {
+    showDialog(
+      context: passedContext,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Center(child: Text('Resume Game?')),
+          content: const Text('Do you want to resume your game?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                startTimer();
+              },
+              child: const Text('Resume'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                restartGame();
+              },
+              child: const Text('New Game'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static void showAnswerResultDialog(
+      BuildContext passedContext,
+      bool isCorrect,
+      int solution,
+      Function startNewQuestion,
+      var timer,
+      User? user,
+      int userScore,
+      int correctAnswersCount,
+      int wrongAnswersCount) {
+    showDialog(
+      context: passedContext,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(
+              child: Text(isCorrect ? 'Correct Answer!' : 'Wrong Answer!')),
+          content: isCorrect
+              ? const Text('Congratulations! You answered correctly.')
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Oops! Your answer is wrong.'),
+                    const SizedBox(height: 10),
+                    Text('Correct Answer: $solution'),
+                  ],
+                ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(passedContext).pop();
+                startNewQuestion();
+              },
+              child: const Text('Next Question'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(passedContext).pop();
+                timer.cancel();
+                showEndGameDialog(
+                  passedContext,
+                  user,
+                  userScore,
+                  correctAnswersCount,
+                  wrongAnswersCount,
+                );
+              },
+              child: const Text('End Game'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

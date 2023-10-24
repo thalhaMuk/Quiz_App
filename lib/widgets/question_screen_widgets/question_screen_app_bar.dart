@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../main.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String user;
@@ -9,7 +8,7 @@ class CustomAppBar extends StatelessWidget {
   final int wrongAnswersCount;
   final int correctAnswersCount;
   final User? firebaseUser;
-  final VoidCallback onEndGamePressed;
+  final Function onEndGamePressed;
 
   const CustomAppBar({
     Key? key,
@@ -39,44 +38,26 @@ class CustomAppBar extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          padding: const EdgeInsets.fromLTRB(20, 35, 20, 5),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 7),
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back_outlined),
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                MyApp(firebaseUser: firebaseUser),
-                          ),
-                        );
-                      },
-                      color: Colors.white,
+              Align(
+                alignment: Alignment.topCenter,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Welcome ",
+                      style: const TextStyle(fontSize: 25),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: "$user!",
+                          style: const TextStyle(fontWeight: FontWeight.w900),
+                        ),
+                      ],
                     ),
                   ),
-                  FittedBox(
-                    fit: BoxFit.cover,
-                    child: RichText(
-                      text: TextSpan(
-                        text: "Welcome ",
-                        style: const TextStyle(fontSize: 25),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: "$user!",
-                            style: const TextStyle(fontWeight: FontWeight.w900),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -142,7 +123,9 @@ class CustomAppBar extends StatelessWidget {
                 ],
               ),
               ElevatedButton(
-                onPressed: onEndGamePressed,
+                onPressed: () {
+                  onEndGamePressed();
+                },
                 child: const Text(
                   'End Game',
                   style: TextStyle(color: Colors.white),
