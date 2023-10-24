@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar();
+  const CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +14,20 @@ class CustomAppBar extends StatelessWidget {
           bottomRight: Radius.circular(50),
         ),
       ),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          FlutterLogo(size: 150),
-          SizedBox(height: 70),
-          Text(
+          Image.asset(
+            'assets/icon.png', 
+            width: 150, 
+            height: 150,
+          ),
+          const SizedBox(height: 50),
+          const Text(
             "QuizMaster",
             style: TextStyle(fontSize: 36, color: Colors.white),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
         ],
       ),
     );
