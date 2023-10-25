@@ -252,13 +252,12 @@ class DialogHelper {
   }
 
   static Future<bool?> showCongratulationsPopup(
-      BuildContext context, int totalScore) {
+      BuildContext context, String totalScore) {
     return showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(StringHelper.milestoneTitle
-              .replaceAll('%s', totalScore.toString())),
+          title: Text('${StringHelper.milestoneTitle} $totalScore'),
           content: const Text(StringHelper.milestoneText),
           actions: <Widget>[
             TextButton(

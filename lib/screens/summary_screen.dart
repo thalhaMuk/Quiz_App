@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
+import 'package:quiz_app/screens/leaderboard_screen.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../helpers/string_helper.dart';
@@ -116,12 +117,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RichText(
               text: TextSpan(
                 text: StringHelper.totalQuestionsText,
-                style: const TextStyle(fontSize: 20, color: ColorHelper.textColor),
+                style:
+                    const TextStyle(fontSize: 20, color: ColorHelper.textColor),
                 children: <TextSpan>[
                   TextSpan(
                     text: "$totalQuestions",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w900, color: ColorHelper.successColor),
+                        fontWeight: FontWeight.w900,
+                        color: ColorHelper.successColor),
                   ),
                 ],
               ),
@@ -130,12 +133,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RichText(
               text: TextSpan(
                 text: StringHelper.totalCorrectAnswersText,
-                style: const TextStyle(fontSize: 20, color: ColorHelper.textColor),
+                style:
+                    const TextStyle(fontSize: 20, color: ColorHelper.textColor),
                 children: <TextSpan>[
                   TextSpan(
                     text: "$correctAnswers",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w900, color: ColorHelper.successColor),
+                        fontWeight: FontWeight.w900,
+                        color: ColorHelper.successColor),
                   ),
                 ],
               ),
@@ -144,12 +149,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RichText(
               text: TextSpan(
                 text: StringHelper.totalIncorrectAnswersText,
-                style: const TextStyle(fontSize: 20, color: ColorHelper.textColor),
+                style:
+                    const TextStyle(fontSize: 20, color: ColorHelper.textColor),
                 children: <TextSpan>[
                   TextSpan(
                     text: "$incorrectAnswers",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w900, color: ColorHelper.errorColor),
+                        fontWeight: FontWeight.w900,
+                        color: ColorHelper.errorColor),
                   ),
                 ],
               ),
@@ -172,6 +179,27 @@ class _SummaryScreenState extends State<SummaryScreen> {
               ),
               child: const Text(
                 StringHelper.checkAnswerHistoryText,
+                style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
+              ),
+            ),
+            const SizedBox(height: 10),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LeaderboardScreen(user: widget.user),
+                  ),
+                );
+              },
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: ColorHelper.primaryColor),
+                textStyle: const TextStyle(color: ColorHelper.primaryColor),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              ),
+              child: const Text(
+                StringHelper.goLeaderboardButtonText,
                 style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
               ),
             ),

@@ -34,6 +34,7 @@ class _QuestionScreenState extends State<QuestionScreen>
   bool _isTimerRunning = false;
   int _remainingTime = 20000;
   bool _timerExpired = false;
+  late OverlayEntry loadingOverlay;
 
   @override
   void initState() {
@@ -79,7 +80,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           .get();
 
       if (userDoc.exists) {
-        totalScore = userDoc[StringHelper.totalScoreText] ?? 0;
+        totalScore = userDoc[StringHelper.totalScore] ?? 0;
       }
     } else {
       await Hive.openBox(StringHelper.userScoresDatabaseName);
@@ -93,9 +94,12 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   Future<void> checkMilestone() async {
     int totalScore = await getTotalCorrectAnswers();
+    loadingOverlay.remove();
     if (totalScore % 100 == 0 && totalScore >= 100) {
       bool? userWantsToShare =
-          await DialogHelper.showCongratulationsPopup(context, totalScore);
+          // ignore: use_build_context_synchronously
+          await DialogHelper.showCongratulationsPopup(
+              context, totalScore.toString());
       if (userWantsToShare == true) {
         Share.share(StringHelper.shareText);
       }
@@ -111,17 +115,19 @@ class _QuestionScreenState extends State<QuestionScreen>
         var userScoresRef = FirebaseFirestore.instance
             .collection(StringHelper.userScoresDatabaseName);
         var userId = widget.user?.uid;
+        var username = widget.user?.displayName;
         var userScoreDoc = await userScoresRef.doc(userId).get();
 
         if (userScoreDoc.exists) {
           await userScoresRef.doc(userId).update({
-            StringHelper.totalScoreText: newTotalScore,
+            StringHelper.totalScore: newTotalScore,
             StringHelper.timestampText: FieldValue.serverTimestamp(),
           });
         } else {
           await userScoresRef.doc(userId).set({
             StringHelper.userIdText: userId,
-            StringHelper.totalScoreText: newTotalScore,
+            StringHelper.username: username,
+            StringHelper.totalScore: newTotalScore,
             StringHelper.timestampText: FieldValue.serverTimestamp(),
           });
         }
@@ -271,6 +277,18 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   void _validateAnswer(int selectedAnswer) async {
+    loadingOverlay = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).size.height / 2 - 20,
+        left: MediaQuery.of(context).size.width / 2 - 20,
+        child: const CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(ColorHelper.primaryColor),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(loadingOverlay);
+
     _timer.cancel();
     bool isCorrect = selectedAnswer == _questionData.solution;
     if (isCorrect) {

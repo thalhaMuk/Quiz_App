@@ -115,9 +115,15 @@ class StringHelper {
   static const String userScoresDatabaseName = 'userScores';
   static const String firebaseSyncError = 'Error syncing with Firebase';
   static const String milestoneTitle =
-      'Congratulations! You have achieved a milestone!';
-  static const String milestoneText =
-      'You have scored %s points!! \n Do you want to share it on social media?';
+      'Congratulations!!! You have scored ';
   static const String shareText =
       'I achieved a milestone in the quiz app! Check it out!';
+  static const String goLeaderboardButtonText = 'View leaderboard';
+  static const String notLoggedInMessage =
+      'Please sign in to view the leaderboard';
+  static const String okButtonText = 'View leaderboard';
+  static const String username = 'username';
+  static const String totalScore = 'totalScore';
+  static const String milestoneText =
+      'You have achieved a milestone! Do you want to share it on social media?';
 }

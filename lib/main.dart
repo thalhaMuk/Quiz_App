@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String user =
-        firebaseUser?.displayName?.split('')[0] ?? StringHelper.defaultUsername;
+        firebaseUser?.displayName?.split(' ')[0] ?? StringHelper.defaultUsername;
     return MaterialApp(
       home: Scaffold(
         appBar: PreferredSize(
@@ -125,7 +125,7 @@ class MyApp extends StatelessWidget {
                     side: const BorderSide(color: ColorHelper.primaryColor),
                     textStyle: const TextStyle(color: ColorHelper.primaryColor),
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 70, vertical: 20),
+                        horizontal: 65, vertical: 20),
                   ),
                   child: const Text(
                     StringHelper.logoutButtonText,
