@@ -73,7 +73,8 @@ class StringHelper {
 
   static const String loadingQuestionErrorMessage =
       'Failed to load question. Please try again later.';
-  static const String savingAnswerHistoryErrorMessage = 'Error saving answer history.';
+  static const String savingAnswerHistoryErrorMessage =
+      'Error saving answer history.';
   static const String timeRemainingText = 'Time remaining: ';
   static const String secondsText = ' seconds';
 
@@ -83,20 +84,21 @@ class StringHelper {
   static const String noText = 'No';
   static const String timestampLabel = 'Timestamp: ';
 
-
   static const String quizResultText = 'Quiz Result';
   static const String userScoreText = 'User Score: ';
   static const String tryAgainText = 'Try Again';
   static const String errorText = 'Error';
   static const String quitGameTitle = 'End Game?';
-  static const String quitGameMessage = 'Are you sure you want to end the game?';
+  static const String quitGameMessage =
+      'Are you sure you want to end the game?';
   static const String gameOverTitle = 'Game Over';
   static const String goBackHomeText = 'Go Back Home';
   static const String resumeGameTitle = 'Resume Game?';
   static const String resumeGameMessage = 'Do you want to resume your game?';
   static const String correctAnswerTitleText = 'Correct Answer!';
   static const String wrongAnswerTitleText = 'Wrong Answer!';
-  static const String congratulationsText = 'Congratulations! You answered correctly.';
+  static const String congratulationsText =
+      'Congratulations! You answered correctly.';
   static const String oopsText = 'Oops! Your answer is wrong.';
   static const String nextQuestionText = 'Next Question';
   static const String okText = 'Okay';
@@ -104,6 +106,18 @@ class StringHelper {
   static const String endText = 'End';
   static const String resumeText = 'Resume';
   static const String newGameText = 'New Game';
-  static const String signoutError = 'Failed to sign out. Please try again later.';
-  static const String signinError = 'Failed to sign in. Please try again later.';
+  static const String signoutError =
+      'Failed to sign out. Please try again later.';
+  static const String signinError =
+      'Failed to sign in. Please try again later.';
+  static const String updatingAnswerError = 'Error updating user score';
+  static const String totalScoreText = 'score';
+  static const String userScoresDatabaseName = 'userScores';
+  static const String firebaseSyncError = 'Error syncing with Firebase';
+  static const String milestoneTitle =
+      'Congratulations! You have achieved a milestone!';
+  static const String milestoneText =
+      'You have scored %s points!! \n Do you want to share it on social media?';
+  static const String shareText =
+      'I achieved a milestone in the quiz app! Check it out!';
 }

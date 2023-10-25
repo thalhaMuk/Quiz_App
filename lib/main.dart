@@ -112,7 +112,8 @@ class MyApp extends StatelessWidget {
                   ),
                   child: const Text(
                     StringHelper.loginButtonText,
-                    style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
+                    style: TextStyle(
+                        fontSize: 20, color: ColorHelper.primaryColor),
                   ),
                 ),
               if (firebaseUser != null)
@@ -128,7 +129,8 @@ class MyApp extends StatelessWidget {
                   ),
                   child: const Text(
                     StringHelper.logoutButtonText,
-                    style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
+                    style: TextStyle(
+                        fontSize: 20, color: ColorHelper.primaryColor),
                   ),
                 ),
             ],

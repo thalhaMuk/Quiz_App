@@ -25,8 +25,10 @@ class DialogHelper {
               Text("${StringHelper.userScoreText} $userScore"),
               Text(
                   "${StringHelper.totalQuestionsText} ${correctAnswersCount + wrongAnswersCount}"),
-              Text("${StringHelper.totalCorrectAnswersText} $correctAnswersCount"),
-              Text("${StringHelper.totalIncorrectAnswersText} $wrongAnswersCount"),
+              Text(
+                  "${StringHelper.totalCorrectAnswersText} $correctAnswersCount"),
+              Text(
+                  "${StringHelper.totalIncorrectAnswersText} $wrongAnswersCount"),
             ],
           ),
           actions: [
@@ -42,8 +44,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (passedContext) =>
-                        SummaryScreen(user: user),
+                    builder: (passedContext) => SummaryScreen(user: user),
                   ),
                 );
               },
@@ -146,8 +147,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (passedContext) =>
-                        SummaryScreen(user: user),
+                    builder: (passedContext) => SummaryScreen(user: user),
                   ),
                 );
               },
@@ -209,7 +209,9 @@ class DialogHelper {
       builder: (context) {
         return AlertDialog(
           title: Center(
-              child: Text(isCorrect ? StringHelper.correctAnswerTitleText : StringHelper.wrongAnswerTitleText)),
+              child: Text(isCorrect
+                  ? StringHelper.correctAnswerTitleText
+                  : StringHelper.wrongAnswerTitleText)),
           content: isCorrect
               ? const Text(StringHelper.congratulationsText)
               : Column(
@@ -242,6 +244,34 @@ class DialogHelper {
                 );
               },
               child: const Text(StringHelper.endGameButtonText),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  static Future<bool?> showCongratulationsPopup(
+      BuildContext context, int totalScore) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(StringHelper.milestoneTitle
+              .replaceAll('%s', totalScore.toString())),
+          content: const Text(StringHelper.milestoneText),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text(StringHelper.noText),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: const Text(StringHelper.yesText),
             ),
           ],
         );
