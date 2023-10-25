@@ -13,4 +13,6 @@ class ColorHelper {
   static const Color appBarColor = Color.fromARGB(255, 174, 39, 242);
   static const Color gradientStartColor = Color.fromARGB(255, 125, 36, 210);
   static const Color gradientEndColor = Color.fromARGB(255, 38, 14, 59);
+  static const Color firstPlaceColor = Colors.deepPurpleAccent;
+  static const Color thirdPlaceColor = Colors.purple;
 }

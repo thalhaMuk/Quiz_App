@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:hive/hive.dart';
+import 'package:quiz_app/helpers/hive_helper.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
+import '../helpers/answer_history_item.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
+import '../helpers/firebase_helper.dart';
+import '../helpers/lazy_load.dart';
 import '../main.dart';
-import '../models/summary_data.dart';
 
 class AnswerHistory extends StatefulWidget {
   final User? user;
@@ -26,67 +28,23 @@ class _AnswerHistoryState extends State<AnswerHistory> {
   bool isLoading = true;
   late List<dynamic> answerHistory;
 
-  Future<void> _initializeFirebase() async {
-    try {
-      var userId = widget.user?.uid;
-      var querySnapshot = await FirebaseFirestore.instance
-          .collection(StringHelper.databaseName)
-          .where(StringHelper.userIdText, isEqualTo: userId)
-          .get();
-
-      answerHistory = querySnapshot.docs;
-    } catch (e) {
-      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
   void _showErrorDialog(String message) {
     DialogHelper.showErrorDialog(context, message);
   }
 
-  Future<void> _getAnswerHistoryFromHive() async {
-    try {
-      if (await Hive.boxExists(StringHelper.databaseName)) {
-        final answerHistoryBox = Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
-        List<LocalAnswerHistory> history = [];
-
-        for (var i = 0; i < answerHistoryBox.length; i++) {
-          var localHistory = answerHistoryBox.getAt(i);
-          if (localHistory != null) {
-            history.add(localHistory);
-          }
-        }
-
-        setState(() {
-          answerHistory = history;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          answerHistory = [];
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
     if (widget.user != null) {
-      _initializeFirebase();
+      answerHistory = await FirebaseHelper.initializeFirebase(
+          StringHelper.databaseName, widget.user!, _showErrorDialog);
     } else {
-      _getAnswerHistoryFromHive();
+      answerHistory = await HiveHelper.getAnswerHistoryFromHive(
+          StringHelper.databaseName, _showErrorDialog);
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Widget _buildAnswerHistoryList() {
@@ -138,68 +96,5 @@ class _AnswerHistoryState extends State<AnswerHistory> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
-  }
-}
-
-class AnswerHistoryItem extends StatelessWidget {
-  final String questionImageUrl;
-  final int selectedAnswer;
-  final bool isCorrect;
-  final Timestamp timestamp;
-
-  const AnswerHistoryItem({
-    required this.questionImageUrl,
-    required this.selectedAnswer,
-    required this.isCorrect,
-    required this.timestamp,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border.all(color: isCorrect ? ColorHelper.successColor : ColorHelper.errorColor),
-      ),
-      child: Column(
-        children: [
-          Image.network(questionImageUrl),
-          Text('${StringHelper.selectedAnswerLabel} $selectedAnswer'),
-          Text('${StringHelper.correctAnswerLabel} ${isCorrect ? StringHelper.yesText : StringHelper.noText}',
-              style: TextStyle(color: isCorrect ? ColorHelper.successColor : ColorHelper.errorColor)),
-          Text('${StringHelper.timestampLabel} ${timestamp.toDate()}'),
-        ],
-      ),
-    );
-  }
-}
-
-class LazyLoad extends StatefulWidget {
-  final Widget child;
-
-  const LazyLoad({super.key, required this.child});
-
-  @override
-  State<LazyLoad> createState() => _LazyLoadState();
-}
-
-class _LazyLoadState extends State<LazyLoad> {
-  bool _loaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _loaded = true;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _loaded ? widget.child : const SizedBox.shrink();
   }
 }

@@ -1,8 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quiz_app/helpers/firebase_helper.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
+import '../helpers/lazy_load.dart';
+import '../helpers/leaderboard_item.dart';
 import '../helpers/string_helper.dart';
 import '../main.dart';
 
@@ -22,32 +24,15 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   late int totalScore;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     if (widget.user != null) {
-      _initializeFirebase();
+      leaderboardList = await FirebaseHelper.initializeFirebase(
+          StringHelper.userScoresDatabaseName, widget.user!, _showErrorDialog);
+      leaderboardList.map((doc) => doc.data()).toList();
     } else {
       _userNotSignedIn();
     }
-  }
-
-  Future<void> _initializeFirebase() async {
-    try {
-      var querySnapshot = await FirebaseFirestore.instance
-          .collection(StringHelper.userScoresDatabaseName)
-          .orderBy(StringHelper.totalScore,
-              descending: true)
-          .get();
-
-      leaderboardList = querySnapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
-      setState(() {
-        isLoading = false;
-      });
-      return;
-    }
-
     setState(() {
       isLoading = false;
     });
@@ -104,103 +89,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   }
 
   Widget _userNotSignedIn() {
-    setState(() {
-      isLoading = false;
-    });
     return const Center(
       child: Text(
         StringHelper.notLoggedInMessage,
         style: TextStyle(fontSize: 20, color: ColorHelper.textColor),
       ),
     );
-  }
-}
-
-class LeaderboardItem extends StatelessWidget {
-  final String username;
-  final int totalScore;
-  final int position;
-
-  const LeaderboardItem({
-    required this.username,
-    required this.totalScore,
-    required this.position,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Color backgroundColor;
-    if (position == 1) {
-      backgroundColor = Colors.deepPurpleAccent;
-    } else if (position == 2) {
-      backgroundColor = Colors.purpleAccent;
-    } else if (position == 3) {
-      backgroundColor = Colors.purple;
-    } else {
-      backgroundColor = Colors.white;
-    }
-
-    return Container(
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            '$position',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            username,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '$totalScore',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class LazyLoad extends StatefulWidget {
-  final Widget child;
-
-  const LazyLoad({super.key, required this.child});
-
-  @override
-  State<LazyLoad> createState() => _LazyLoadState();
-}
-
-class _LazyLoadState extends State<LazyLoad> {
-  bool _loaded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _loaded = true;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _loaded ? widget.child : const SizedBox.shrink();
   }
 }
