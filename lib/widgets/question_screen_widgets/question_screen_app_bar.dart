@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../helpers/string_helper.dart';
 
 class CustomAppBar extends StatelessWidget {
   final String user;
@@ -47,7 +48,7 @@ class CustomAppBar extends StatelessWidget {
                   fit: BoxFit.cover,
                   child: RichText(
                     text: TextSpan(
-                      text: "Welcome ",
+                      text: StringHelper.welcomeText,
                       style: const TextStyle(fontSize: 25),
                       children: <TextSpan>[
                         TextSpan(
@@ -64,7 +65,7 @@ class CustomAppBar extends StatelessWidget {
                 children: [
                   RichText(
                     text: TextSpan(
-                      text: "Quiz no: ",
+                      text: StringHelper.quizNumberText,
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
@@ -77,7 +78,7 @@ class CustomAppBar extends StatelessWidget {
                   ),
                   RichText(
                     text: TextSpan(
-                      text: "Score: ",
+                      text: StringHelper.scoreText,
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
@@ -96,7 +97,7 @@ class CustomAppBar extends StatelessWidget {
                 children: [
                   RichText(
                     text: TextSpan(
-                      text: "Wrong answers: ",
+                      text: StringHelper.wrongAnswersText,
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
@@ -109,7 +110,7 @@ class CustomAppBar extends StatelessWidget {
                   ),
                   RichText(
                     text: TextSpan(
-                      text: "Correct answers: ",
+                      text: StringHelper.correctAnswersText,
                       style: const TextStyle(fontWeight: FontWeight.w900),
                       children: <TextSpan>[
                         TextSpan(
@@ -127,7 +128,7 @@ class CustomAppBar extends StatelessWidget {
                   onEndGamePressed();
                 },
                 child: const Text(
-                  'End Game',
+                  StringHelper.endGameButtonText,
                   style: TextStyle(color: Colors.white),
                 ),
               ),

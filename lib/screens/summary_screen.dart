@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 import '../helpers/dialog_helper.dart';
+import '../helpers/string_helper.dart';
 import '../main.dart';
 import '../widgets/opening_screen_widgets/opening_screen_app_bar.dart';
 import 'answer_history_screen.dart';
@@ -30,8 +31,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   Future<void> _getAnswerHistoryFromHive() async {
     try {
-      if (await Hive.boxExists('answerHistory')) {
-        final answerHistoryBox = Hive.box<LocalAnswerHistory>('answerHistory');
+      if (await Hive.boxExists(StringHelper.databaseName)) {
+        final answerHistoryBox =
+            Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
         List<LocalAnswerHistory> history = [];
         for (var i = 0; i < answerHistoryBox.length; i++) {
           history.add(answerHistoryBox.getAt(i)!);
@@ -46,7 +48,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
         hiveBoxExists = false;
       }
     } catch (e) {
-      _showErrorDialog('Error loading data answer history.');
+      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
     } finally {
       setState(() {
         isLoading = false;
@@ -58,16 +60,17 @@ class _SummaryScreenState extends State<SummaryScreen> {
     try {
       var userId = widget.user?.uid;
       var answerHistory = await FirebaseFirestore.instance
-          .collection('answerHistory')
-          .where('userId', isEqualTo: userId)
+          .collection(StringHelper.databaseName)
+          .where(StringHelper.userIdText, isEqualTo: userId)
           .get();
 
       totalQuestions = answerHistory.docs.length;
-      correctAnswers =
-          answerHistory.docs.where((answer) => answer['isCorrect']).length;
+      correctAnswers = answerHistory.docs
+          .where((answer) => answer[StringHelper.isCorrectText])
+          .length;
       incorrectAnswers = totalQuestions - correctAnswers;
     } catch (e) {
-      _showErrorDialog('Error loading data answer history.');
+      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
     } finally {
       setState(() {
         isLoading = false;
@@ -111,7 +114,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
           children: [
             RichText(
               text: TextSpan(
-                text: "Total Questions Answered: ",
+                text: StringHelper.totalQuestionsText,
                 style: const TextStyle(fontSize: 20, color: Colors.black),
                 children: <TextSpan>[
                   TextSpan(
@@ -125,7 +128,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             const SizedBox(height: 10),
             RichText(
               text: TextSpan(
-                text: "Total Correct Answers: ",
+                text: StringHelper.totalCorrectAnswersText,
                 style: const TextStyle(fontSize: 20, color: Colors.black),
                 children: <TextSpan>[
                   TextSpan(
@@ -139,7 +142,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             const SizedBox(height: 10),
             RichText(
               text: TextSpan(
-                text: "Total Incorrect Answers: ",
+                text: StringHelper.totalIncorrectAnswersText,
                 style: const TextStyle(fontSize: 20, color: Colors.black),
                 children: <TextSpan>[
                   TextSpan(
@@ -156,8 +159,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        AnswerHistory(user: widget.user),
+                    builder: (context) => AnswerHistory(user: widget.user),
                   ),
                 );
               },
@@ -168,7 +170,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               ),
               child: const Text(
-                "Check Answer History",
+                StringHelper.checkAnswerHistoryText,
                 style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
               ),
             ),
@@ -189,7 +191,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     const EdgeInsets.symmetric(horizontal: 90, vertical: 20),
               ),
               child: const Text(
-                "Go Back",
+                StringHelper.goBackText,
                 style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
               ),
             ),
@@ -204,7 +206,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          "No games played yet.",
+          StringHelper.noGamesPlayedText,
           style: TextStyle(fontSize: 20, color: Colors.black),
         ),
         const SizedBox(height: 10),
@@ -223,7 +225,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 90, vertical: 20),
           ),
           child: const Text(
-            "Go Back",
+            StringHelper.goBackText,
             style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
           ),
         ),

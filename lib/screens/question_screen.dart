@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 import 'package:quiver/async.dart';
+import '../helpers/string_helper.dart';
 import '../models/summary_data.dart';
 import '../models/question_data.dart';
 import '../services/api_service.dart';
@@ -71,22 +72,22 @@ class _QuestionScreenState extends State<QuestionScreen>
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         try {
-          await FirebaseFirestore.instance.collection('answerHistory').add({
-            'userId': user.uid,
-            'question': _questionData.question,
-            'selectedAnswer': selectedAnswer,
-            'isCorrect': selectedAnswer == _questionData.solution,
-            'timestamp': FieldValue.serverTimestamp(),
+          await FirebaseFirestore.instance.collection(StringHelper.databaseName).add({
+            StringHelper.userIdText: user.uid,
+            StringHelper.questionText: _questionData.question,
+            StringHelper.selectedAnswerText: selectedAnswer,
+            StringHelper.isCorrectText: selectedAnswer == _questionData.solution,
+            StringHelper.timestampText: FieldValue.serverTimestamp(),
           });
         } catch (e) {
-          _showErrorDialog('Error saving answer history.');
+          _showErrorDialog(StringHelper.savingAnswerHistoryErrorMessage);
         }
       }
     } else {
-      if (await Hive.boxExists('answerHistory')) {
-        final answerHistoryBox = Hive.box<LocalAnswerHistory>('answerHistory');
+      if (await Hive.boxExists(StringHelper.databaseName)) {
+        final answerHistoryBox = Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
         final answerHistory = LocalAnswerHistory(
-          userId: 'User',
+          userId: StringHelper.defaultUsername,
           question: _questionData.question,
           selectedAnswer: selectedAnswer,
           isCorrect: selectedAnswer == _questionData.solution,
@@ -94,7 +95,7 @@ class _QuestionScreenState extends State<QuestionScreen>
         );
         await answerHistoryBox.add(answerHistory);
       } else {
-        _showErrorDialog('Error saving answer history.');
+        _showErrorDialog(StringHelper.savingAnswerHistoryErrorMessage);
       }
     }
   }
@@ -159,7 +160,7 @@ class _QuestionScreenState extends State<QuestionScreen>
         _startTimer();
       }
     } catch (e) {
-      _showErrorDialog('Failed to load question. Please try again later.');
+      _showErrorDialog(StringHelper.loadingQuestionErrorMessage);
     }
   }
 
@@ -227,7 +228,7 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   @override
   Widget build(BuildContext context) {
-    String user = widget.user?.displayName ?? 'User';
+    String user = widget.user?.displayName ?? StringHelper.defaultUsername;
     String remainingTime = (_remainingTime / 1000).toStringAsFixed(0);
 
     return Scaffold(
@@ -271,7 +272,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                       child: Padding(
                         padding: const EdgeInsets.all(10),
                         child: Text(
-                          "Time remaining: $remainingTime seconds",
+                          "${StringHelper.timeRemainingText} $remainingTime ${StringHelper.secondsText}",
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),

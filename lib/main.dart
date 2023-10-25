@@ -5,6 +5,7 @@ import 'package:quiz_app/widgets/opening_screen_widgets/opening_screen_app_bar.d
 import 'package:firebase_core/firebase_core.dart';
 import 'auth/login.dart';
 import 'auth/logout.dart';
+import 'helpers/string_helper.dart';
 import 'models/summary_data.dart';
 import 'screens/question_screen.dart';
 import 'screens/summary_screen.dart';
@@ -18,10 +19,10 @@ void main() async {
   final LocalAnswerHistoryAdapter localAnswerHistoryAdapter =
       LocalAnswerHistoryAdapter();
   Hive.registerAdapter(localAnswerHistoryAdapter);
-  await Hive.openBox<LocalAnswerHistory>('answerHistory');
+  await Hive.openBox<LocalAnswerHistory>(StringHelper.databaseName);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MaterialApp(
-    title: "QuizApp",
+    title: StringHelper.appName,
     home: MyApp(),
   ));
 }
@@ -29,11 +30,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   final User? firebaseUser;
   const MyApp({Key? key, this.firebaseUser}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    String user = firebaseUser?.displayName ?? 'User';
-
+    String user =
+        firebaseUser?.displayName?.split('')[0] ?? StringHelper.defaultUsername;
     return MaterialApp(
       home: Scaffold(
         appBar: PreferredSize(
@@ -48,13 +48,13 @@ class MyApp extends StatelessWidget {
               FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    "Hi ${firebaseUser?.displayName?.split(' ')[0] ?? user}!!",
+                    StringHelper.hiMessage.replaceAll('%s', user),
                     style: const TextStyle(
                         fontSize: 40, color: Colors.purpleAccent),
                   )),
               const SizedBox(height: 10),
               const Text(
-                "Play now and Let's quiz!",
+                StringHelper.playNowDescription,
                 style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
               ),
               const SizedBox(height: 40),
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 ),
                 child: const Text(
-                  "Play Now!",
+                  StringHelper.playNowButtonText,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
@@ -93,7 +93,7 @@ class MyApp extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
                 ),
                 child: const Text(
-                  "View Summary",
+                  StringHelper.viewSummaryButtonText,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
@@ -110,7 +110,7 @@ class MyApp extends StatelessWidget {
                         horizontal: 70, vertical: 20),
                   ),
                   child: const Text(
-                    "Login",
+                    StringHelper.loginButtonText,
                     style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
                   ),
                 ),
@@ -126,7 +126,7 @@ class MyApp extends StatelessWidget {
                         horizontal: 70, vertical: 20),
                   ),
                   child: const Text(
-                    "Logout",
+                    StringHelper.logoutButtonText,
                     style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../helpers/string_helper.dart';
 
 class CustomKeyboard extends StatefulWidget {
   final Function(int) onNumberPressed;
@@ -80,7 +81,7 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
         ),
         child: const Center(
           child: Text(
-            'Submit',
+            StringHelper.submitButtonText,
             style: TextStyle(fontSize: 24, color: Colors.white),
           ),
         ),
@@ -122,7 +123,7 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(
-                  'Please enter a number!',
+                  StringHelper.enterNumberErrorMessage,
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),

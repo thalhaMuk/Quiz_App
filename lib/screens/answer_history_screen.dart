@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
+import 'package:quiz_app/helpers/string_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../main.dart';
 import '../models/summary_data.dart';
@@ -28,13 +29,13 @@ class _AnswerHistoryState extends State<AnswerHistory> {
     try {
       var userId = widget.user?.uid;
       var querySnapshot = await FirebaseFirestore.instance
-          .collection('answerHistory')
-          .where('userId', isEqualTo: userId)
+          .collection(StringHelper.databaseName)
+          .where(StringHelper.userIdText, isEqualTo: userId)
           .get();
 
       answerHistory = querySnapshot.docs;
     } catch (e) {
-      _showErrorDialog('Error loading data answer history.');
+      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
     } finally {
       setState(() {
         isLoading = false;
@@ -48,8 +49,8 @@ class _AnswerHistoryState extends State<AnswerHistory> {
 
   Future<void> _getAnswerHistoryFromHive() async {
     try {
-      if (await Hive.boxExists('answerHistory')) {
-        final answerHistoryBox = Hive.box<LocalAnswerHistory>('answerHistory');
+      if (await Hive.boxExists(StringHelper.databaseName)) {
+        final answerHistoryBox = Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
         List<LocalAnswerHistory> history = [];
 
         for (var i = 0; i < answerHistoryBox.length; i++) {
@@ -70,7 +71,7 @@ class _AnswerHistoryState extends State<AnswerHistory> {
         });
       }
     } catch (e) {
-      _showErrorDialog('Error loading data answer history.');
+      _showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
       setState(() {
         isLoading = false;
       });
@@ -93,10 +94,10 @@ class _AnswerHistoryState extends State<AnswerHistory> {
       itemBuilder: (context, index) {
         var localHistory = answerHistory[index];
         if (widget.user != null) {
-          isCorrect = localHistory.data()['isCorrect'];
-          questionImageUrl = localHistory.data()['question'];
-          selectedAnswer = localHistory.data()['selectedAnswer'];
-          timestamp = localHistory.data()['timestamp'];
+          isCorrect = localHistory.data()[StringHelper.isCorrectText];
+          questionImageUrl = localHistory.data()[StringHelper.questionText];
+          selectedAnswer = localHistory.data()[StringHelper.selectedAnswerText];
+          timestamp = localHistory.data()[StringHelper.timestampText];
         } else {
           isCorrect = localHistory.isCorrect;
           questionImageUrl = localHistory.question;
@@ -130,7 +131,7 @@ class _AnswerHistoryState extends State<AnswerHistory> {
             ),
           );
         },
-        label: const Text("Go Back"),
+        label: const Text(StringHelper.goBackText),
         icon: const Icon(Icons.arrow_back),
         backgroundColor: Colors.purpleAccent,
       ),
@@ -164,10 +165,10 @@ class AnswerHistoryItem extends StatelessWidget {
       child: Column(
         children: [
           Image.network(questionImageUrl),
-          Text('Selected Answer: $selectedAnswer'),
-          Text('Correct Answer: ${isCorrect ? "Yes" : "No"}',
+          Text('${StringHelper.selectedAnswerLabel} $selectedAnswer'),
+          Text('${StringHelper.correctAnswerLabel} ${isCorrect ? StringHelper.yesText : StringHelper.noText}',
               style: TextStyle(color: isCorrect ? Colors.green : Colors.red)),
-          Text('Timestamp: ${timestamp.toDate()}'),
+          Text('${StringHelper.timestampLabel} ${timestamp.toDate()}'),
         ],
       ),
     );

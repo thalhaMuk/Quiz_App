@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:quiz_app/helpers/string_helper.dart';
 import '../main.dart';
 import '../screens/summary_screen.dart';
 
@@ -16,16 +17,16 @@ class DialogHelper {
       builder: (context) {
         return AlertDialog(
           alignment: Alignment.center,
-          title: const Center(child: Text("Quiz Result")),
+          title: const Center(child: Text(StringHelper.quizResultText)),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("User Score: $userScore"),
+              Text("${StringHelper.userScoreText} $userScore"),
               Text(
-                  "Total Questions Answered: ${correctAnswersCount + wrongAnswersCount}"),
-              Text("Correct Answers: $correctAnswersCount"),
-              Text("Incorrect Answers: $wrongAnswersCount"),
+                  "${StringHelper.totalQuestionsText} ${correctAnswersCount + wrongAnswersCount}"),
+              Text("${StringHelper.totalCorrectAnswersText} $correctAnswersCount"),
+              Text("${StringHelper.totalIncorrectAnswersText} $wrongAnswersCount"),
             ],
           ),
           actions: [
@@ -34,7 +35,7 @@ class DialogHelper {
                 Navigator.pop(context);
                 restartGame();
               },
-              child: const Text("Try Again"),
+              child: const Text(StringHelper.tryAgainText),
             ),
             TextButton(
               onPressed: () {
@@ -46,7 +47,7 @@ class DialogHelper {
                   ),
                 );
               },
-              child: const Text("View Summary"),
+              child: const Text(StringHelper.viewSummaryButtonText),
             ),
             TextButton(
               onPressed: () {
@@ -57,7 +58,7 @@ class DialogHelper {
                   ),
                 );
               },
-              child: const Text("End Game"),
+              child: const Text(StringHelper.endGameButtonText),
             ),
           ],
         );
@@ -70,14 +71,14 @@ class DialogHelper {
       context: passedContext,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: const Text(StringHelper.errorText),
           content: Text(errorMessage),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('OK'),
+              child: const Text(StringHelper.okText),
             ),
           ],
         );
@@ -90,14 +91,14 @@ class DialogHelper {
       context: passedContext,
       builder: (context) {
         return AlertDialog(
-          title: const Center(child: Text('End Game?')),
-          content: const Text('Are you sure you want to end the game?'),
+          title: const Center(child: Text(StringHelper.quitGameTitle)),
+          content: const Text(StringHelper.quitGameMessage),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child: const Text(StringHelper.cancelText),
             ),
             TextButton(
               onPressed: () {
@@ -108,7 +109,7 @@ class DialogHelper {
                   ),
                 );
               },
-              child: const Text('End'),
+              child: const Text(StringHelper.endText),
             ),
           ],
         );
@@ -122,14 +123,14 @@ class DialogHelper {
       context: passedContext,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Center(child: Text('Game Over')),
+          title: const Center(child: Text(StringHelper.gameOverTitle)),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Score: $userScore'),
-              Text('Correct Answers: $correctAnswersCount'),
-              Text('Wrong Answers: $wrongAnswersCount'),
+              Text('${StringHelper.userScoreText} $userScore'),
+              Text('${StringHelper.correctAnswersText} $correctAnswersCount'),
+              Text('${StringHelper.wrongAnswersText} $wrongAnswersCount'),
             ],
           ),
           actions: [
@@ -138,7 +139,7 @@ class DialogHelper {
                 Navigator.pop(context);
                 Navigator.pop(passedContext);
               },
-              child: const Text('Go Back Home'),
+              child: const Text(StringHelper.goBackHomeText),
             ),
             TextButton(
               onPressed: () {
@@ -150,7 +151,7 @@ class DialogHelper {
                   ),
                 );
               },
-              child: const Text('Check Summary'),
+              child: const Text(StringHelper.viewSummaryButtonText),
             ),
           ],
         );
@@ -170,22 +171,22 @@ class DialogHelper {
       context: passedContext,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Center(child: Text('Resume Game?')),
-          content: const Text('Do you want to resume your game?'),
+          title: const Center(child: Text(StringHelper.resumeGameTitle)),
+          content: const Text(StringHelper.resumeGameMessage),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 startTimer();
               },
-              child: const Text('Resume'),
+              child: const Text(StringHelper.resumeText),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 restartGame();
               },
-              child: const Text('New Game'),
+              child: const Text(StringHelper.newGameText),
             ),
           ],
         );
@@ -208,16 +209,16 @@ class DialogHelper {
       builder: (context) {
         return AlertDialog(
           title: Center(
-              child: Text(isCorrect ? 'Correct Answer!' : 'Wrong Answer!')),
+              child: Text(isCorrect ? StringHelper.correctAnswerTitleText : StringHelper.wrongAnswerTitleText)),
           content: isCorrect
-              ? const Text('Congratulations! You answered correctly.')
+              ? const Text(StringHelper.congratulationsText)
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Oops! Your answer is wrong.'),
+                    const Text(StringHelper.oopsText),
                     const SizedBox(height: 10),
-                    Text('Correct Answer: $solution'),
+                    Text('${StringHelper.correctAnswersText} $solution'),
                   ],
                 ),
           actions: [
@@ -226,7 +227,7 @@ class DialogHelper {
                 Navigator.of(passedContext).pop();
                 startNewQuestion();
               },
-              child: const Text('Next Question'),
+              child: const Text(StringHelper.nextQuestionText),
             ),
             TextButton(
               onPressed: () {
@@ -240,7 +241,7 @@ class DialogHelper {
                   wrongAnswersCount,
                 );
               },
-              child: const Text('End Game'),
+              child: const Text(StringHelper.endGameButtonText),
             ),
           ],
         );

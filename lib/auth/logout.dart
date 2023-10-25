@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/helpers/string_helper.dart';
 import 'package:quiz_app/main.dart';
 import '../helpers/dialog_helper.dart';
 
@@ -14,7 +15,7 @@ class Logout {
     } catch (e) {
       if (!context.mounted) return;
       DialogHelper.showErrorDialog(
-          context, 'Failed to sign out. Please try again later. $e');
+          context, '${StringHelper.signoutError} $e');
     }
   }
 }

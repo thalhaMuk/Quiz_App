@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app/helpers/string_helper.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -18,13 +19,13 @@ class CustomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Image.asset(
-            'assets/icon.png', 
+            StringHelper.appIconPath, 
             width: 125, 
             height: 125,
           ),
           const SizedBox(height: 40),
           const Text(
-            "QuizMaster",
+            StringHelper.appName,
             style: TextStyle(fontSize: 36, color: Colors.white),
           ),
           const SizedBox(height: 25),

@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'helpers/string_helper.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -17,10 +18,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      throw UnsupportedError(StringHelper.webNotConfiguredError);
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,41 +26,30 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        throw UnsupportedError(StringHelper.macosNotConfiguredError);
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        throw UnsupportedError(StringHelper.windowsNotConfiguredError);
       case TargetPlatform.linux:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        throw UnsupportedError(StringHelper.linuxNotConfiguredError);
       default:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
-        );
+        throw UnsupportedError(StringHelper.platformNotSupportedError);
     }
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB7uvB3iilVkP3tJuUVabM1SSKk-Edrdjo',
-    appId: '1:714754057947:android:89997937537182f5ce0efe',
-    messagingSenderId: '714754057947',
-    projectId: 'quizapp-15a21',
-    storageBucket: 'quizapp-15a21.appspot.com',
+    apiKey: StringHelper.androidApiKey,
+    appId: StringHelper.androidAppId,
+    messagingSenderId: StringHelper.androidMessagingSenderId,
+    projectId: StringHelper.androidProjectId,
+    storageBucket: StringHelper.androidStorageBucket,
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCRJ6BBNEUnEWobE7ALWo1Esy9-tYaLyKY',
-    appId: '1:714754057947:ios:ed495309b7fd72e9ce0efe',
-    messagingSenderId: '714754057947',
-    projectId: 'quizapp-15a21',
-    storageBucket: 'quizapp-15a21.appspot.com',
-    iosBundleId: 'com.example.quizApp',
+    apiKey: StringHelper.iosApiKey,
+    appId: StringHelper.androidAppId,
+    messagingSenderId: StringHelper.iosMessagingSenderId,
+    projectId: StringHelper.iosProjectId,
+    storageBucket: StringHelper.iosStorageBucket,
+    iosBundleId: StringHelper.iosBundleId,
   );
 }
