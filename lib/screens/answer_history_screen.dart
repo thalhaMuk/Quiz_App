@@ -1,84 +1,135 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hive/hive.dart';
+import '../helpers/dialog_helper.dart';
 import '../main.dart';
-import '../widgets/opening_screen_widgets/opening_screen_app_bar.dart';
+import '../models/summary_data.dart';
 
-class AnswerHistory extends StatelessWidget {
-  final User? firebaseUser;
+class AnswerHistory extends StatefulWidget {
+  final User? user;
 
-  const AnswerHistory({this.firebaseUser, Key? key}) : super(key: key);
+  const AnswerHistory({Key? key, this.user}) : super(key: key);
+
+  @override
+  State<AnswerHistory> createState() => _AnswerHistoryState();
+}
+
+class _AnswerHistoryState extends State<AnswerHistory> {
+  late Map<String, dynamic> data;
+  late Timestamp timestamp;
+  late bool isCorrect;
+  late String questionImageUrl;
+  late int selectedAnswer;
+  bool isLoading = true;
+  late List<dynamic> answerHistory;
+
+  Future<void> _initializeFirebase() async {
+    try {
+      var userId = widget.user?.uid;
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection('answerHistory')
+          .where('userId', isEqualTo: userId)
+          .get();
+
+      answerHistory = querySnapshot.docs;
+    } catch (e) {
+      _showErrorDialog('Error loading data answer history.');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    DialogHelper.showErrorDialog(context, message);
+  }
+
+  Future<void> _getAnswerHistoryFromHive() async {
+    try {
+      if (await Hive.boxExists('answerHistory')) {
+        final answerHistoryBox = Hive.box<LocalAnswerHistory>('answerHistory');
+        List<LocalAnswerHistory> history = [];
+
+        for (var i = 0; i < answerHistoryBox.length; i++) {
+          var localHistory = answerHistoryBox.getAt(i);
+          if (localHistory != null) {
+            history.add(localHistory);
+          }
+        }
+
+        setState(() {
+          answerHistory = history;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          answerHistory = [];
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      _showErrorDialog('Error loading data answer history.');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.user != null) {
+      _initializeFirebase();
+    } else {
+      _getAnswerHistoryFromHive();
+    }
+  }
+
+  Widget _buildAnswerHistoryList() {
+    return ListView.builder(
+      itemCount: answerHistory.length,
+      itemBuilder: (context, index) {
+        var localHistory = answerHistory[index];
+
+        if (widget.user != null) {
+          isCorrect = localHistory.data()['isCorrect'];
+          questionImageUrl = localHistory.data()['question'];
+          selectedAnswer = localHistory.data()['selectedAnswer'];
+          timestamp = localHistory.data()['timestamp'];
+        } else {
+          isCorrect = localHistory.isCorrect;
+          questionImageUrl = localHistory.question;
+          selectedAnswer = localHistory.selectedAnswer;
+          timestamp = Timestamp.fromDate(localHistory.timestamp);
+        }
+        return LazyLoad(
+          child: AnswerHistoryItem(
+            questionImageUrl: questionImageUrl,
+            selectedAnswer: selectedAnswer,
+            isCorrect: isCorrect,
+            timestamp: timestamp,
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    var userId = firebaseUser?.uid;
-
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            const SliverAppBar(
-              expandedHeight: 400.0,
-              floating: false,
-              pinned: false,
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              flexibleSpace: FlexibleSpaceBar(
-                background: CustomAppBar(),
-              ),
-            ),
-          ];
-        },
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('answerHistory')
-              .where('userId', isEqualTo: userId)
-              .snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-
-            List<DocumentSnapshot> answerHistory = snapshot.data!.docs;
-
-            answerHistory.sort((a, b) {
-              Timestamp timestampA = a['timestamp'] as Timestamp;
-              Timestamp timestampB = b['timestamp'] as Timestamp;
-              return timestampB.compareTo(timestampA);
-            });
-
-            return ListView.builder(
-              itemCount: answerHistory.length,
-              itemBuilder: (context, index) {
-                var data = answerHistory[index].data() as Map<String, dynamic>;
-                var isCorrect = data['isCorrect'] as bool;
-                var questionImageUrl = data['question'] as String;
-                var selectedAnswer = data['selectedAnswer'] as int;
-                var timestamp = data['timestamp'] as Timestamp;
-
-                return LazyLoad(
-                  child: AnswerHistoryItem(
-                    questionImageUrl: questionImageUrl,
-                    selectedAnswer: selectedAnswer,
-                    isCorrect: isCorrect,
-                    timestamp: timestamp,
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _buildAnswerHistoryList(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MyApp(firebaseUser: firebaseUser),
+              builder: (context) => MyApp(firebaseUser: widget.user),
             ),
           );
         },
@@ -90,8 +141,6 @@ class AnswerHistory extends StatelessWidget {
     );
   }
 }
-
-// Rest of your code remains unchanged...
 
 class AnswerHistoryItem extends StatelessWidget {
   final String questionImageUrl;

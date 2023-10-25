@@ -8,7 +8,7 @@ class Logout {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MyApp(),
+          builder: (context) => const MyApp(),
         ),
       );
     } catch (e) {

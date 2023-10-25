@@ -5,11 +5,20 @@ import 'package:quiz_app/widgets/opening_screen_widgets/opening_screen_app_bar.d
 import 'package:firebase_core/firebase_core.dart';
 import 'auth/login.dart';
 import 'auth/logout.dart';
+import 'models/summary_data.dart';
 import 'screens/question_screen.dart';
 import 'screens/summary_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+  final LocalAnswerHistoryAdapter localAnswerHistoryAdapter =
+      LocalAnswerHistoryAdapter();
+  Hive.registerAdapter(localAnswerHistoryAdapter);
+  await Hive.openBox<LocalAnswerHistory>('answerHistory');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MaterialApp(
     title: "QuizApp",
@@ -29,7 +38,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: PreferredSize(
           preferredSize:
-              Size.fromHeight(MediaQuery.of(context).size.height * 0.5),
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.35),
           child: const CustomAppBar(),
         ),
         body: Center(
@@ -69,6 +78,26 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SummaryScreen(user: firebaseUser),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purpleAccent,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                ),
+                child: const Text(
+                  "View Summary",
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              const SizedBox(height: 10),
               if (firebaseUser == null)
                 OutlinedButton(
                   onPressed: () {
@@ -86,47 +115,20 @@ class MyApp extends StatelessWidget {
                   ),
                 ),
               if (firebaseUser != null)
-                Column(
-                  children: [
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SummaryScreen(firebaseUser: firebaseUser),
-                          ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.purpleAccent),
-                        textStyle: const TextStyle(color: Colors.purpleAccent),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 35, vertical: 10),
-                      ),
-                      child: const Text(
-                        "View Summary",
-                        style:
-                            TextStyle(fontSize: 20, color: Colors.purpleAccent),
-                      ),
-                    ),
-                    OutlinedButton(
-                      onPressed: () {
-                        Logout().signOut(context);
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.purpleAccent),
-                        textStyle: const TextStyle(color: Colors.purpleAccent),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 70, vertical: 10),
-                      ),
-                      child: const Text(
-                        "Logout",
-                        style:
-                            TextStyle(fontSize: 20, color: Colors.purpleAccent),
-                      ),
-                    ),
-                  ],
+                OutlinedButton(
+                  onPressed: () {
+                    Logout().signOut(context);
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.purpleAccent),
+                    textStyle: const TextStyle(color: Colors.purpleAccent),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 70, vertical: 20),
+                  ),
+                  child: const Text(
+                    "Logout",
+                    style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                  ),
                 ),
             ],
           ),
@@ -135,4 +137,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

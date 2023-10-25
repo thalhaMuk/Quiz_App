@@ -19,15 +19,15 @@ class CustomAppBar extends StatelessWidget {
         children: <Widget>[
           Image.asset(
             'assets/icon.png', 
-            width: 150, 
-            height: 150,
+            width: 125, 
+            height: 125,
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 40),
           const Text(
             "QuizMaster",
             style: TextStyle(fontSize: 36, color: Colors.white),
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 25),
         ],
       ),
     );

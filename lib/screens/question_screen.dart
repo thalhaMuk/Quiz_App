@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:hive/hive.dart';
 import 'package:quiver/async.dart';
+import '../models/summary_data.dart';
 import '../models/question_data.dart';
 import '../services/api_service.dart';
 import '../helpers/dialog_helper.dart';
@@ -65,17 +67,33 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   Future<void> _saveAnswerHistory(int selectedAnswer) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      try {
-        await FirebaseFirestore.instance.collection('answerHistory').add({
-          'userId': user.uid,
-          'question': _questionData.question,
-          'selectedAnswer': selectedAnswer,
-          'isCorrect': selectedAnswer == _questionData.solution,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-      } catch (e) {
+    if (widget.user != null) {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        try {
+          await FirebaseFirestore.instance.collection('answerHistory').add({
+            'userId': user.uid,
+            'question': _questionData.question,
+            'selectedAnswer': selectedAnswer,
+            'isCorrect': selectedAnswer == _questionData.solution,
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+        } catch (e) {
+          _showErrorDialog('Error saving answer history.');
+        }
+      }
+    } else {
+      if (await Hive.boxExists('answerHistory')) {
+        final answerHistoryBox = Hive.box<LocalAnswerHistory>('answerHistory');
+        final answerHistory = LocalAnswerHistory(
+          userId: 'User',
+          question: _questionData.question,
+          selectedAnswer: selectedAnswer,
+          isCorrect: selectedAnswer == _questionData.solution,
+          timestamp: DateTime.now(),
+        );
+        await answerHistoryBox.add(answerHistory);
+      } else {
         _showErrorDialog('Error saving answer history.');
       }
     }
@@ -184,7 +202,7 @@ class _QuestionScreenState extends State<QuestionScreen>
     } else {
       _wrongAnswersCount++;
     }
-    widget.user ?? _saveAnswerHistory(selectedAnswer);
+    _saveAnswerHistory(selectedAnswer);
     _showAnswerResultDialog(isCorrect);
   }
 

@@ -42,7 +42,7 @@ class DialogHelper {
                   context,
                   MaterialPageRoute(
                     builder: (passedContext) =>
-                        SummaryScreen(firebaseUser: user),
+                        SummaryScreen(user: user),
                   ),
                 );
               },
@@ -146,7 +146,7 @@ class DialogHelper {
                   context,
                   MaterialPageRoute(
                     builder: (passedContext) =>
-                        SummaryScreen(firebaseUser: user),
+                        SummaryScreen(user: user),
                   ),
                 );
               },
