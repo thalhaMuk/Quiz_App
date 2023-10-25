@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
+import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../main.dart';
 import '../models/summary_data.dart';
@@ -133,7 +134,7 @@ class _AnswerHistoryState extends State<AnswerHistory> {
         },
         label: const Text(StringHelper.goBackText),
         icon: const Icon(Icons.arrow_back),
-        backgroundColor: Colors.purpleAccent,
+        backgroundColor: ColorHelper.primaryColor,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -160,14 +161,14 @@ class AnswerHistoryItem extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        border: Border.all(color: isCorrect ? Colors.green : Colors.red),
+        border: Border.all(color: isCorrect ? ColorHelper.successColor : ColorHelper.errorColor),
       ),
       child: Column(
         children: [
           Image.network(questionImageUrl),
           Text('${StringHelper.selectedAnswerLabel} $selectedAnswer'),
           Text('${StringHelper.correctAnswerLabel} ${isCorrect ? StringHelper.yesText : StringHelper.noText}',
-              style: TextStyle(color: isCorrect ? Colors.green : Colors.red)),
+              style: TextStyle(color: isCorrect ? ColorHelper.successColor : ColorHelper.errorColor)),
           Text('${StringHelper.timestampLabel} ${timestamp.toDate()}'),
         ],
       ),

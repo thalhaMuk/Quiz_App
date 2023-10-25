@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../helpers/color_helper.dart';
 import '../../helpers/string_helper.dart';
 
 class CustomKeyboard extends StatefulWidget {
@@ -56,13 +57,13 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
         width: 80,
         height: 80,
         decoration: BoxDecoration(
-          color: widget.selectedNumber == number ? Colors.green : Colors.blue,
+          color: widget.selectedNumber == number ? ColorHelper.successColor : ColorHelper.keyboardButtonColor,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Center(
           child: Text(
             '$number',
-            style: const TextStyle(fontSize: 24, color: Colors.white),
+            style: const TextStyle(fontSize: 24, color: ColorHelper.secondaryColor),
           ),
         ),
       ),
@@ -76,13 +77,13 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
         width: 160,
         height: 80,
         decoration: BoxDecoration(
-          color: Colors.orange,
+          color: ColorHelper.submitButtonColor,
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Center(
           child: Text(
             StringHelper.submitButtonText,
-            style: TextStyle(fontSize: 24, color: Colors.white),
+            style: TextStyle(fontSize: 24, color: ColorHelper.secondaryColor),
           ),
         ),
       ),
@@ -119,12 +120,12 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
               child: Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red,
+                  color: ColorHelper.errorColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(
                   StringHelper.enterNumberErrorMessage,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(color: ColorHelper.secondaryColor, fontSize: 18),
                 ),
               ),
             ),

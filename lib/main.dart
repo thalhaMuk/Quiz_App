@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/firebase_options.dart';
+import 'package:quiz_app/helpers/color_helper.dart';
 import 'package:quiz_app/widgets/opening_screen_widgets/opening_screen_app_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'auth/login.dart';
@@ -50,12 +51,12 @@ class MyApp extends StatelessWidget {
                   child: Text(
                     StringHelper.hiMessage.replaceAll('%s', user),
                     style: const TextStyle(
-                        fontSize: 40, color: Colors.purpleAccent),
+                        fontSize: 40, color: ColorHelper.primaryColor),
                   )),
               const SizedBox(height: 10),
               const Text(
                 StringHelper.playNowDescription,
-                style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
               ),
               const SizedBox(height: 40),
               ElevatedButton(
@@ -68,7 +69,7 @@ class MyApp extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purpleAccent,
+                  backgroundColor: ColorHelper.primaryColor,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
                 ),
@@ -88,7 +89,7 @@ class MyApp extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purpleAccent,
+                  backgroundColor: ColorHelper.primaryColor,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
                 ),
@@ -104,14 +105,14 @@ class MyApp extends StatelessWidget {
                     Login().signIn(context);
                   },
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.purpleAccent),
-                    textStyle: const TextStyle(color: Colors.purpleAccent),
+                    side: const BorderSide(color: ColorHelper.primaryColor),
+                    textStyle: const TextStyle(color: ColorHelper.primaryColor),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 70, vertical: 20),
                   ),
                   child: const Text(
                     StringHelper.loginButtonText,
-                    style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                    style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
                   ),
                 ),
               if (firebaseUser != null)
@@ -120,14 +121,14 @@ class MyApp extends StatelessWidget {
                     Logout().signOut(context);
                   },
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Colors.purpleAccent),
-                    textStyle: const TextStyle(color: Colors.purpleAccent),
+                    side: const BorderSide(color: ColorHelper.primaryColor),
+                    textStyle: const TextStyle(color: ColorHelper.primaryColor),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 70, vertical: 20),
                   ),
                   child: const Text(
                     StringHelper.logoutButtonText,
-                    style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                    style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
                   ),
                 ),
             ],

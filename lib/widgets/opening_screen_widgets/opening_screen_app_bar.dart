@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
+import '../../helpers/color_helper.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -9,7 +10,7 @@ class CustomAppBar extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       decoration: const BoxDecoration(
-        color: Colors.purpleAccent,
+        color: ColorHelper.primaryColor,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(50),
           bottomRight: Radius.circular(50),
@@ -26,7 +27,7 @@ class CustomAppBar extends StatelessWidget {
           const SizedBox(height: 40),
           const Text(
             StringHelper.appName,
-            style: TextStyle(fontSize: 36, color: Colors.white),
+            style: TextStyle(fontSize: 36, color: ColorHelper.secondaryColor),
           ),
           const SizedBox(height: 25),
         ],

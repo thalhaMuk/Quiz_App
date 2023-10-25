@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
 import 'package:quiver/async.dart';
+import '../helpers/color_helper.dart';
 import '../helpers/string_helper.dart';
 import '../models/summary_data.dart';
 import '../models/question_data.dart';
@@ -238,8 +239,8 @@ class _QuestionScreenState extends State<QuestionScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 125, 36, 210),
-              Color.fromARGB(255, 38, 14, 59),
+              ColorHelper.gradientStartColor,
+              ColorHelper.gradientEndColor,
             ],
           ),
         ),
@@ -261,10 +262,10 @@ class _QuestionScreenState extends State<QuestionScreen>
                   children: [
                     LinearProgressIndicator(
                       minHeight: 20,
-                      backgroundColor: Colors.grey,
+                      backgroundColor: ColorHelper.timerBackgroundColor,
                       borderRadius: const BorderRadius.all(Radius.circular(30)),
                       valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.blue),
+                          const AlwaysStoppedAnimation<Color>(ColorHelper.timerValueColor),
                       value: (_remainingTime / _timerSeconds),
                     ),
                     Align(
@@ -273,7 +274,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                         padding: const EdgeInsets.all(10),
                         child: Text(
                           "${StringHelper.timeRemainingText} $remainingTime ${StringHelper.secondsText}",
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(color: ColorHelper.secondaryColor),
                         ),
                       ),
                     ),

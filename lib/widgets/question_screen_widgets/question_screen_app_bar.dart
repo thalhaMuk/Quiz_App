@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../helpers/color_helper.dart';
 import '../../helpers/string_helper.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -32,7 +33,7 @@ class CustomAppBar extends StatelessWidget {
       ),
       child: Container(
         decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 174, 39, 242),
+          color: ColorHelper.appBarColor,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(30),
             bottomRight: Radius.circular(30),
@@ -71,7 +72,7 @@ class CustomAppBar extends StatelessWidget {
                         TextSpan(
                           text: "$quizNumber",
                           style: const TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.w900),
+                              color: ColorHelper.successColor, fontWeight: FontWeight.w900),
                         ),
                       ],
                     ),
@@ -84,7 +85,7 @@ class CustomAppBar extends StatelessWidget {
                         TextSpan(
                           text: "$userScore",
                           style: const TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.w900),
+                              color: ColorHelper.successColor, fontWeight: FontWeight.w900),
                         ),
                       ],
                     ),
@@ -103,7 +104,7 @@ class CustomAppBar extends StatelessWidget {
                         TextSpan(
                           text: "$wrongAnswersCount",
                           style: const TextStyle(
-                              color: Colors.red, fontWeight: FontWeight.w900),
+                              color: ColorHelper.errorColor, fontWeight: FontWeight.w900),
                         ),
                       ],
                     ),
@@ -116,7 +117,7 @@ class CustomAppBar extends StatelessWidget {
                         TextSpan(
                           text: "$correctAnswersCount",
                           style: const TextStyle(
-                              color: Colors.green, fontWeight: FontWeight.w900),
+                              color: ColorHelper.successColor, fontWeight: FontWeight.w900),
                         ),
                       ],
                     ),
@@ -129,7 +130,7 @@ class CustomAppBar extends StatelessWidget {
                 },
                 child: const Text(
                   StringHelper.endGameButtonText,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: ColorHelper.secondaryColor),
                 ),
               ),
             ],

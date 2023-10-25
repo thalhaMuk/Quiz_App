@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hive/hive.dart';
+import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../helpers/string_helper.dart';
 import '../main.dart';
@@ -115,12 +116,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RichText(
               text: TextSpan(
                 text: StringHelper.totalQuestionsText,
-                style: const TextStyle(fontSize: 20, color: Colors.black),
+                style: const TextStyle(fontSize: 20, color: ColorHelper.textColor),
                 children: <TextSpan>[
                   TextSpan(
                     text: "$totalQuestions",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w900, color: Colors.green),
+                        fontWeight: FontWeight.w900, color: ColorHelper.successColor),
                   ),
                 ],
               ),
@@ -129,12 +130,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RichText(
               text: TextSpan(
                 text: StringHelper.totalCorrectAnswersText,
-                style: const TextStyle(fontSize: 20, color: Colors.black),
+                style: const TextStyle(fontSize: 20, color: ColorHelper.textColor),
                 children: <TextSpan>[
                   TextSpan(
                     text: "$correctAnswers",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w900, color: Colors.green),
+                        fontWeight: FontWeight.w900, color: ColorHelper.successColor),
                   ),
                 ],
               ),
@@ -143,12 +144,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
             RichText(
               text: TextSpan(
                 text: StringHelper.totalIncorrectAnswersText,
-                style: const TextStyle(fontSize: 20, color: Colors.black),
+                style: const TextStyle(fontSize: 20, color: ColorHelper.textColor),
                 children: <TextSpan>[
                   TextSpan(
                     text: "$incorrectAnswers",
                     style: const TextStyle(
-                        fontWeight: FontWeight.w900, color: Colors.red),
+                        fontWeight: FontWeight.w900, color: ColorHelper.errorColor),
                   ),
                 ],
               ),
@@ -164,14 +165,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 );
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.purpleAccent),
-                textStyle: const TextStyle(color: Colors.purpleAccent),
+                side: const BorderSide(color: ColorHelper.primaryColor),
+                textStyle: const TextStyle(color: ColorHelper.primaryColor),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               ),
               child: const Text(
                 StringHelper.checkAnswerHistoryText,
-                style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
               ),
             ),
             const SizedBox(height: 10),
@@ -185,14 +186,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 );
               },
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Colors.purpleAccent),
-                textStyle: const TextStyle(color: Colors.purpleAccent),
+                side: const BorderSide(color: ColorHelper.primaryColor),
+                textStyle: const TextStyle(color: ColorHelper.primaryColor),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 90, vertical: 20),
               ),
               child: const Text(
                 StringHelper.goBackText,
-                style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+                style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
               ),
             ),
           ],
@@ -207,7 +208,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
       children: [
         const Text(
           StringHelper.noGamesPlayedText,
-          style: TextStyle(fontSize: 20, color: Colors.black),
+          style: TextStyle(fontSize: 20, color: ColorHelper.textColor),
         ),
         const SizedBox(height: 10),
         OutlinedButton(
@@ -220,13 +221,13 @@ class _SummaryScreenState extends State<SummaryScreen> {
             );
           },
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Colors.purpleAccent),
-            textStyle: const TextStyle(color: Colors.purpleAccent),
+            side: const BorderSide(color: ColorHelper.primaryColor),
+            textStyle: const TextStyle(color: ColorHelper.primaryColor),
             padding: const EdgeInsets.symmetric(horizontal: 90, vertical: 20),
           ),
           child: const Text(
             StringHelper.goBackText,
-            style: TextStyle(fontSize: 20, color: Colors.purpleAccent),
+            style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
           ),
         ),
       ],
