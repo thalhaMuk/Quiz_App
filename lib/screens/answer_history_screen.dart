@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -94,7 +92,6 @@ class _AnswerHistoryState extends State<AnswerHistory> {
       itemCount: answerHistory.length,
       itemBuilder: (context, index) {
         var localHistory = answerHistory[index];
-
         if (widget.user != null) {
           isCorrect = localHistory.data()['isCorrect'];
           questionImageUrl = localHistory.data()['question'];
@@ -183,8 +180,7 @@ class LazyLoad extends StatefulWidget {
   const LazyLoad({super.key, required this.child});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LazyLoadState createState() => _LazyLoadState();
+  State<LazyLoad> createState() => _LazyLoadState();
 }
 
 class _LazyLoadState extends State<LazyLoad> {

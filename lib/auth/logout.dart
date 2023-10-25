@@ -12,7 +12,7 @@ class Logout {
         ),
       );
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      if (!context.mounted) return;
       DialogHelper.showErrorDialog(
           context, 'Failed to sign out. Please try again later. $e');
     }

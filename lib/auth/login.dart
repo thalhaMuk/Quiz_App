@@ -29,7 +29,7 @@ class Login {
       UserCredential userCredential = await signInWithGoogle();
       User? user = userCredential.user;
       if (user != null) {
-        // ignore: use_build_context_synchronously
+        if (!context.mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -38,7 +38,7 @@ class Login {
         );
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      if (!context.mounted) return;
       DialogHelper.showErrorDialog(
           context, 'Failed to sign in. Please try again later. $e');
     }
