@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class LazyLoad extends StatefulWidget {
@@ -17,9 +16,11 @@ class _LazyLoadState extends State<LazyLoad> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _loaded = true;
-      });
+      if (mounted) {
+        setState(() {
+          _loaded = true;
+        });
+      }
     });
   }
 
