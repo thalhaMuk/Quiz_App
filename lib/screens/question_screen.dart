@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive/hive.dart';
 import 'package:quiver/async.dart';
 import '../helpers/color_helper.dart';
+import '../helpers/firebase_helper.dart';
+import '../helpers/hive_helper.dart';
 import '../helpers/string_helper.dart';
-import '../models/summary_data.dart';
 import '../models/question_data.dart';
 import '../services/api_service.dart';
 import '../helpers/dialog_helper.dart';
@@ -35,6 +34,8 @@ class _QuestionScreenState extends State<QuestionScreen>
   int _remainingTime = 20000;
   bool _timerExpired = false;
   late OverlayEntry loadingOverlay;
+  final FirebaseHelper firebaseHelper = FirebaseHelper();
+  final HiveHelper hiveHelper = HiveHelper();
 
   @override
   void initState() {
@@ -70,30 +71,8 @@ class _QuestionScreenState extends State<QuestionScreen>
         _correctAnswersCount, _wrongAnswersCount, _startTimer, _restartGame);
   }
 
-  Future<int> getTotalCorrectAnswers() async {
-    int totalScore = 0;
-
-    if (widget.user != null) {
-      var userDoc = await FirebaseFirestore.instance
-          .collection(StringHelper.userScoresDatabaseName)
-          .doc(widget.user!.uid)
-          .get();
-
-      if (userDoc.exists) {
-        totalScore = userDoc[StringHelper.totalScore] ?? 0;
-      }
-    } else {
-      await Hive.openBox(StringHelper.userScoresDatabaseName);
-      var hiveBox = Hive.box(StringHelper.userScoresDatabaseName);
-      totalScore = hiveBox.get(StringHelper.defaultUsername);
-      hiveBox.close();
-    }
-
-    return totalScore;
-  }
-
-  Future<void> checkMilestone() async {
-    int totalScore = await getTotalCorrectAnswers();
+  Future<void> _checkMilestone() async {
+    int totalScore = await _getTotalSCore();
     loadingOverlay.remove();
     if (totalScore % 100 == 0 && totalScore >= 100) {
       bool? userWantsToShare =
@@ -106,79 +85,32 @@ class _QuestionScreenState extends State<QuestionScreen>
     }
   }
 
-  Future<void> updateScoreToDatabase() async {
-    int totalScore = await getTotalCorrectAnswers();
-    int newTotalScore = totalScore + 10;
-
+  Future<dynamic> _getTotalSCore() async {
     if (widget.user != null) {
-      try {
-        var userScoresRef = FirebaseFirestore.instance
-            .collection(StringHelper.userScoresDatabaseName);
-        var userId = widget.user?.uid;
-        var username = widget.user?.displayName;
-        var userScoreDoc = await userScoresRef.doc(userId).get();
-
-        if (userScoreDoc.exists) {
-          await userScoresRef.doc(userId).update({
-            StringHelper.totalScore: newTotalScore,
-            StringHelper.timestampText: FieldValue.serverTimestamp(),
-          });
-        } else {
-          await userScoresRef.doc(userId).set({
-            StringHelper.userIdText: userId,
-            StringHelper.username: username,
-            StringHelper.totalScore: newTotalScore,
-            StringHelper.timestampText: FieldValue.serverTimestamp(),
-          });
-        }
-      } catch (e) {
-        _showErrorDialog(StringHelper.updatingAnswerError);
-      }
+      return await firebaseHelper.getTotalScore(widget.user!.uid);
     } else {
-      if (await Hive.boxExists(StringHelper.userScoresDatabaseName)) {
-        await Hive.openBox(StringHelper.userScoresDatabaseName);
-        final scoreBox = Hive.box(StringHelper.userScoresDatabaseName);
-        scoreBox.put(StringHelper.defaultUsername, newTotalScore);
-      } else {
-        _showErrorDialog(StringHelper.updatingAnswerError);
-      }
+      return await hiveHelper.getTotalScore();
     }
   }
 
-  Future<void> _saveAnswerHistory(int selectedAnswer) async {
+  Future<void> _updateScoreToDatabase() async {
+    int totalScore = await _getTotalSCore();
+    int newTotalScore = 10 + totalScore;
     if (widget.user != null) {
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        try {
-          await FirebaseFirestore.instance
-              .collection(StringHelper.databaseName)
-              .add({
-            StringHelper.userIdText: user.uid,
-            StringHelper.questionText: _questionData.question,
-            StringHelper.selectedAnswerText: selectedAnswer,
-            StringHelper.isCorrectText:
-                selectedAnswer == _questionData.solution,
-            StringHelper.timestampText: FieldValue.serverTimestamp(),
-          });
-        } catch (e) {
-          _showErrorDialog(StringHelper.savingAnswerHistoryErrorMessage);
-        }
-      }
+      await firebaseHelper.updateScoreToDatabase(
+          widget.user!.uid, newTotalScore, _showErrorDialog);
     } else {
-      if (await Hive.boxExists(StringHelper.databaseName)) {
-        final answerHistoryBox =
-            Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
-        final answerHistory = LocalAnswerHistory(
-          userId: StringHelper.defaultUsername,
-          question: _questionData.question,
-          selectedAnswer: selectedAnswer,
-          isCorrect: selectedAnswer == _questionData.solution,
-          timestamp: DateTime.now(),
-        );
-        await answerHistoryBox.add(answerHistory);
-      } else {
-        _showErrorDialog(StringHelper.savingAnswerHistoryErrorMessage);
-      }
+      await hiveHelper.updateScoreToDatabase(newTotalScore);
+    }
+  }
+
+  Future<void> _saveAnswerHistory(
+      String question, int selectedAnswer, bool isCorrect) async {
+    if (widget.user != null) {
+      await firebaseHelper.saveAnswerHistory(widget.user!.uid, question,
+          selectedAnswer, isCorrect, _showErrorDialog);
+    } else {
+      await hiveHelper.saveAnswerHistory(question, selectedAnswer, isCorrect);
     }
   }
 
@@ -294,12 +226,12 @@ class _QuestionScreenState extends State<QuestionScreen>
     if (isCorrect) {
       _userScore += 10;
       _correctAnswersCount++;
-      await updateScoreToDatabase();
-      await checkMilestone();
+      await _updateScoreToDatabase();
+      await _checkMilestone();
     } else {
       _wrongAnswersCount++;
     }
-    _saveAnswerHistory(selectedAnswer);
+    _saveAnswerHistory(_questionData.question, selectedAnswer, isCorrect);
     _showAnswerResultDialog(isCorrect);
   }
 
