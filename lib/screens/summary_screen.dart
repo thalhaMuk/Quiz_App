@@ -4,11 +4,11 @@ import 'package:quiz_app/screens/leaderboard_screen.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../helpers/string_helper.dart';
-import '../main.dart';
 import '../services/data/firebase_helper.dart';
 import '../services/data/hive_helper.dart';
 import '../widgets/opening_screen/opening_screen_app_bar.dart';
 import 'answer_history_screen.dart';
+import 'home_screen.dart';
 
 class SummaryScreen extends StatefulWidget {
   final User? user;
@@ -210,7 +210,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MyApp(firebaseUser: widget.user),
+                    builder: (context) => HomeScreen(firebaseUser: widget.user),
                   ),
                 );
               },
@@ -245,7 +245,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => MyApp(firebaseUser: widget.user),
+                builder: (context) => HomeScreen(firebaseUser: widget.user),
               ),
             );
           },

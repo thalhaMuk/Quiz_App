@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quiz_app/main.dart';
 import '../../helpers/dialog_helper.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../helpers/string_helper.dart';
+import '../../screens/home_screen.dart';
 
 class Login {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -34,7 +34,7 @@ class Login {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MyApp(firebaseUser: user),
+            builder: (context) => HomeScreen(firebaseUser: user),
           ),
         );
       }

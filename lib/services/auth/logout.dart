@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
-import 'package:quiz_app/main.dart';
 import '../../helpers/dialog_helper.dart';
+import '../../screens/home_screen.dart';
 
 class Logout {
   void signOut(BuildContext context) async {
@@ -9,7 +9,7 @@ class Logout {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const MyApp(),
+          builder: (context) => const HomeScreen(),
         ),
       );
     } catch (e) {

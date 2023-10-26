@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
-import '../main.dart';
+import '../screens/home_screen.dart';
 import '../screens/summary_screen.dart';
 
 class DialogHelper {
@@ -56,7 +56,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (passedContext) => MyApp(firebaseUser: user),
+                    builder: (passedContext) => HomeScreen(firebaseUser: user),
                   ),
                 );
               },
@@ -109,7 +109,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (passedContext) => MyApp(firebaseUser: user),
+                    builder: (passedContext) => HomeScreen(firebaseUser: user),
                   ),
                 );
               },
