@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../widgets/lazy_load/lazy_load.dart';
-import '../widgets/widget_screen/leaderboard_item.dart';
+import '../widgets/leaderboard_screen/leaderboard_item.dart';
 import '../helpers/string_helper.dart';
 import '../services/data/firebase_helper.dart';
 import 'summary_screen.dart';
