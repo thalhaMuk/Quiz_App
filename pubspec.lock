@@ -233,6 +233,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  fidenz_flutter_boilerplate:
+    dependency: "direct main"
+    description:
+      name: fidenz_flutter_boilerplate
+      sha256: "68e09ee7c4cd365ba8771d70fed77f84f6cbd788cafd299c729f99e66600872d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   file:
     dependency: transitive
     description:

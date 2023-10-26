@@ -1,3 +1,4 @@
+import 'package:fidenz_flutter_boilerplate/utility/fidenz_network_utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,7 +84,13 @@ class HomeScreen extends StatelessWidget {
             if (firebaseUser == null)
               OutlinedButton(
                 onPressed: () {
-                  Login().signIn(context);
+                  // Check into this
+                  FidenzNetworkUtility.getNetworkStatus((isOnline) => {
+                        if (isOnline)
+                          {debugPrint("Online"), Login().signIn(context)}
+                        else
+                          {debugPrint("OFfline ")}
+                      });
                 },
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: ColorHelper.primaryColor),
