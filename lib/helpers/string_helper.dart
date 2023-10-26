@@ -126,4 +126,15 @@ class StringHelper {
   static const String totalScore = 'totalScore';
   static const String milestoneText =
       'You have achieved a milestone! Do you want to share it on social media?';
+  static const String appStartLogger = 'Application initialized';
+  static const String mountingEnd = 'Screen loaded';
+  static const String mountingStart = 'Screen loading initialized';
+  static const String startingDatabaseSearch = 'Searching database...';
+  static const String endDatabaseSearch = 'Got data from database';
+  static const String databaseSearchError = 'An error occured when searching data';
+  static const String updatingTodatabase = 'Updating data in database';
+  static const String updatedTodatabase = 'Updated data in database';
+  static const String savingTodatabase = 'Saving data in database';
+  static const String savedTodatabase = 'Saved data in database';
+  static const String loadingLeaderboardError = 'Error loading leaderboard data';
 }

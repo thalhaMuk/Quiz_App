@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
 import 'package:quiz_app/screens/summary_screen.dart';
 import 'package:quiz_app/services/data/hive_helper.dart';
+import '../helpers/logger.dart';
 import '../widgets/answer_history/answer_history_item.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
@@ -34,12 +35,13 @@ class _AnswerHistoryState extends State<AnswerHistory> {
 
   @override
   void initState() {
+    logger.d(StringHelper.mountingStart);
     super.initState();
     _initializeAnswerHistoryData();
+    logger.d(StringHelper.mountingEnd);
   }
 
   Future<void> _initializeAnswerHistoryData() async {
-    super.initState();
     if (widget.user != null) {
       var snapshot = await FirebaseService.initializeFirebase(
           StringHelper.databaseName, widget.user!, _showErrorDialog);

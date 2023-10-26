@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/services/data/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'helpers/logger.dart';
 import 'helpers/string_helper.dart';
 import 'models/summary_data.dart';
 import 'package:hive/hive.dart';
@@ -17,6 +18,7 @@ void main() async {
   await Hive.openBox<LocalAnswerHistory>(StringHelper.databaseName);
   await Hive.openBox<int>(StringHelper.userScoresDatabaseName);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  logger.d(StringHelper.appStartLogger);
   runApp(const MaterialApp(
     title: StringHelper.appName,
     home: HomeScreen(),

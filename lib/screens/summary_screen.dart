@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app/screens/leaderboard_screen.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
+import '../helpers/logger.dart';
 import '../helpers/string_helper.dart';
 import '../services/data/firebase_helper.dart';
 import '../services/data/hive_helper.dart';
@@ -80,7 +81,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
   @override
   void initState() {
     super.initState();
+    logger.d(StringHelper.mountingStart);
     getData();
+    logger.d(StringHelper.mountingEnd);
   }
 
   void getData() async {

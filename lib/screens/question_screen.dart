@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiver/async.dart';
 import 'package:quiz_app/services/data/hive_helper.dart';
 import '../helpers/color_helper.dart';
+import '../helpers/logger.dart';
 import '../helpers/string_helper.dart';
 import '../models/question_data.dart';
 import '../services/api/api_service.dart';
@@ -40,9 +41,11 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   @override
   void initState() {
+    logger.d(StringHelper.mountingStart);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadQuestion();
+    logger.d(StringHelper.mountingEnd);
   }
 
   @override

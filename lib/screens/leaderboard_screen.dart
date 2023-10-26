@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
+import '../helpers/logger.dart';
 import '../widgets/lazy_load/lazy_load.dart';
 import '../widgets/leaderboard_screen/leaderboard_item.dart';
 import '../helpers/string_helper.dart';
@@ -25,8 +26,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
   @override
   void initState() {
+    logger.d(StringHelper.mountingStart);
     super.initState();
     _initializeLeaderboardData();
+    logger.d(StringHelper.mountingEnd);
   }
 
   void _initializeLeaderboardData() async {
