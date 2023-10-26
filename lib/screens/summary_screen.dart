@@ -80,10 +80,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
   @override
   void initState() {
     super.initState();
+    getData();
+  }
+
+  void getData() async {
     if (widget.user != null) {
-      _initializeFirebase();
+      await _initializeFirebase();
     } else {
-      _getAnswerHistoryFromHive();
+      await _getAnswerHistoryFromHive();
     }
   }
 

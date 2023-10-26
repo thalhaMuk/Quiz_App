@@ -11,7 +11,10 @@ class HiveService {
         List<LocalAnswerHistory> history = [];
 
         for (var i = 0; i < answerHistoryBox.length; i++) {
-          history.add(answerHistoryBox.getAt(i)!);
+          var localHistory = answerHistoryBox.getAt(i);
+          if (localHistory != null) {
+            history.add(localHistory);
+          }
         }
 
         return history;
@@ -25,29 +28,18 @@ class HiveService {
 
   Future<int> getTotalScore() async {
     int totalScore = 0;
-    if (!await Hive.boxExists(StringHelper.userScoresDatabaseName)) {
-      await Hive.openBox(StringHelper.userScoresDatabaseName);
-    }
-    var hiveBox = Hive.box(StringHelper.userScoresDatabaseName);
+    var hiveBox = Hive.box<int>(StringHelper.userScoresDatabaseName);
     totalScore = hiveBox.get(StringHelper.defaultUsername) ?? 0;
-    hiveBox.close();
     return totalScore;
   }
 
   Future<void> updateScoreToDatabase(int newTotalScore) async {
-    if (!await Hive.boxExists(StringHelper.userScoresDatabaseName)) {
-      await Hive.openBox(StringHelper.userScoresDatabaseName);
-    }
-    var temp = await Hive.openBox(StringHelper.userScoresDatabaseName);
-    final scoreBox = Hive.box(StringHelper.userScoresDatabaseName);
+    final scoreBox = Hive.box<int>(StringHelper.userScoresDatabaseName);
     scoreBox.put(StringHelper.defaultUsername, newTotalScore);
   }
 
   Future<void> saveAnswerHistory(
       String question, int selectedAnswer, bool isCorrect) async {
-    if (!await Hive.boxExists(StringHelper.databaseName)) {
-      await Hive.openBox(StringHelper.databaseName);
-    }
     final answerHistoryBox =
         Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
     final answerHistory = LocalAnswerHistory(

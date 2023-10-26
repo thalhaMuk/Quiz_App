@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quiz_app/services/data/firebase_options.dart';
 import 'package:quiz_app/helpers/color_helper.dart';
 import 'package:quiz_app/widgets/opening_screen/opening_screen_app_bar.dart';
@@ -21,7 +22,7 @@ void main() async {
       LocalAnswerHistoryAdapter();
   Hive.registerAdapter(localAnswerHistoryAdapter);
   await Hive.openBox<LocalAnswerHistory>(StringHelper.databaseName);
-  await Hive.openBox(StringHelper.userScoresDatabaseName);
+  await Hive.openBox<int>(StringHelper.userScoresDatabaseName);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MaterialApp(
     title: StringHelper.appName,
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key, this.firebaseUser}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     String user = firebaseUser?.displayName?.split(' ')[0] ??
         StringHelper.defaultUsername;
     return MaterialApp(
