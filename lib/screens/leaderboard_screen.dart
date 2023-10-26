@@ -5,8 +5,8 @@ import '../helpers/dialog_helper.dart';
 import '../widgets/lazy_load/lazy_load.dart';
 import '../widgets/widget_screen/leaderboard_item.dart';
 import '../helpers/string_helper.dart';
-import '../main.dart';
 import '../services/data/firebase_helper.dart';
+import 'summary_screen.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   final User? user;
@@ -80,7 +80,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MyApp(firebaseUser: widget.user),
+              builder: (context) => SummaryScreen(user: widget.user),
             ),
           );
         },

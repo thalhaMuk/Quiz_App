@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
+import 'package:quiz_app/screens/summary_screen.dart';
 import 'package:quiz_app/services/data/hive_helper.dart';
 import '../widgets/answer_history/answer_history_item.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../widgets/lazy_load/lazy_load.dart';
-import '../main.dart';
 import '../services/data/firebase_helper.dart';
 
 class AnswerHistory extends StatefulWidget {
@@ -92,7 +92,7 @@ class _AnswerHistoryState extends State<AnswerHistory> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => MyApp(firebaseUser: widget.user),
+              builder: (context) => SummaryScreen(user: widget.user),
             ),
           );
         },

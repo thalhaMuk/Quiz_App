@@ -38,106 +38,104 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     String user = firebaseUser?.displayName?.split(' ')[0] ??
         StringHelper.defaultUsername;
-    return MaterialApp(
-      home: Scaffold(
-        appBar: PreferredSize(
-          preferredSize:
-              Size.fromHeight(MediaQuery.of(context).size.height * 0.35),
-          child: const CustomAppBar(),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    StringHelper.hiMessage.replaceAll('%s', user),
-                    style: const TextStyle(
-                        fontSize: 40, color: ColorHelper.primaryColor),
-                  )),
-              const SizedBox(height: 10),
-              const Text(
-                StringHelper.playNowDescription,
-                style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize:
+            Size.fromHeight(MediaQuery.of(context).size.height * 0.35),
+        child: const CustomAppBar(),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  StringHelper.hiMessage.replaceAll('%s', user),
+                  style: const TextStyle(
+                      fontSize: 40, color: ColorHelper.primaryColor),
+                )),
+            const SizedBox(height: 10),
+            const Text(
+              StringHelper.playNowDescription,
+              style: TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuestionScreen(user: firebaseUser),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorHelper.primaryColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
               ),
-              const SizedBox(height: 40),
-              ElevatedButton(
+              child: const Text(
+                StringHelper.playNowButtonText,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SummaryScreen(user: firebaseUser),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorHelper.primaryColor,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+              ),
+              child: const Text(
+                StringHelper.viewSummaryButtonText,
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            const SizedBox(height: 10),
+            if (firebaseUser == null)
+              OutlinedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => QuestionScreen(user: firebaseUser),
-                    ),
-                  );
+                  Login().signIn(context);
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorHelper.primaryColor,
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: ColorHelper.primaryColor),
+                  textStyle: const TextStyle(color: ColorHelper.primaryColor),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 70, vertical: 20),
                 ),
                 child: const Text(
-                  StringHelper.playNowButtonText,
-                  style: TextStyle(fontSize: 20),
+                  StringHelper.loginButtonText,
+                  style:
+                      TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
                 ),
               ),
-              const SizedBox(height: 10),
-              ElevatedButton(
+            if (firebaseUser != null)
+              OutlinedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SummaryScreen(user: firebaseUser),
-                    ),
-                  );
+                  Logout().signOut(context);
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorHelper.primaryColor,
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: ColorHelper.primaryColor),
+                  textStyle: const TextStyle(color: ColorHelper.primaryColor),
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+                      const EdgeInsets.symmetric(horizontal: 65, vertical: 20),
                 ),
                 child: const Text(
-                  StringHelper.viewSummaryButtonText,
-                  style: TextStyle(fontSize: 20),
+                  StringHelper.logoutButtonText,
+                  style:
+                      TextStyle(fontSize: 20, color: ColorHelper.primaryColor),
                 ),
               ),
-              const SizedBox(height: 10),
-              if (firebaseUser == null)
-                OutlinedButton(
-                  onPressed: () {
-                    Login().signIn(context);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: ColorHelper.primaryColor),
-                    textStyle: const TextStyle(color: ColorHelper.primaryColor),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 70, vertical: 20),
-                  ),
-                  child: const Text(
-                    StringHelper.loginButtonText,
-                    style: TextStyle(
-                        fontSize: 20, color: ColorHelper.primaryColor),
-                  ),
-                ),
-              if (firebaseUser != null)
-                OutlinedButton(
-                  onPressed: () {
-                    Logout().signOut(context);
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: ColorHelper.primaryColor),
-                    textStyle: const TextStyle(color: ColorHelper.primaryColor),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 65, vertical: 20),
-                  ),
-                  child: const Text(
-                    StringHelper.logoutButtonText,
-                    style: TextStyle(
-                        fontSize: 20, color: ColorHelper.primaryColor),
-                  ),
-                ),
-            ],
-          ),
+          ],
         ),
       ),
     );
