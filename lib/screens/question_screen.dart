@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiver/async.dart';
+import 'package:quiz_app/services/data/hive_helper.dart';
 import '../helpers/color_helper.dart';
-import '../helpers/firebase_helper.dart';
-import '../helpers/hive_helper.dart';
 import '../helpers/string_helper.dart';
 import '../models/question_data.dart';
-import '../services/api_service.dart';
+import '../services/api/api_service.dart';
 import '../helpers/dialog_helper.dart';
-import '../widgets/question_screen_widgets/custom_keyboard.dart';
-import '../widgets/question_screen_widgets/question_screen_app_bar.dart';
+import '../services/data/firebase_helper.dart';
+import '../widgets/question_screen/custom_keyboard.dart';
+import '../widgets/question_screen/question_screen_app_bar.dart';
 import 'package:share_plus/share_plus.dart';
 
 class QuestionScreen extends StatefulWidget {
@@ -34,8 +34,9 @@ class _QuestionScreenState extends State<QuestionScreen>
   int _remainingTime = 20000;
   bool _timerExpired = false;
   late OverlayEntry loadingOverlay;
-  final FirebaseHelper firebaseHelper = FirebaseHelper();
-  final HiveHelper hiveHelper = HiveHelper();
+  final FirebaseService firebaseHelper = FirebaseService();
+  final HiveService hiveHelper = HiveService();
+  late int totalScore;
 
   @override
   void initState() {
@@ -72,8 +73,6 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   Future<void> _checkMilestone() async {
-    int totalScore = await _getTotalSCore();
-    loadingOverlay.remove();
     if (totalScore % 100 == 0 && totalScore >= 100) {
       bool? userWantsToShare =
           // ignore: use_build_context_synchronously
@@ -94,7 +93,18 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   Future<void> _updateScoreToDatabase() async {
-    int totalScore = await _getTotalSCore();
+    loadingOverlay = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).size.height / 2 - 20,
+        left: MediaQuery.of(context).size.width / 2 - 20,
+        child: const CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(ColorHelper.primaryColor),
+        ),
+      ),
+    );
+    Overlay.of(context).insert(loadingOverlay);
+
+    totalScore = await _getTotalSCore();
     int newTotalScore = 10 + totalScore;
     if (widget.user != null) {
       await firebaseHelper.updateScoreToDatabase(
@@ -102,6 +112,7 @@ class _QuestionScreenState extends State<QuestionScreen>
     } else {
       await hiveHelper.updateScoreToDatabase(newTotalScore);
     }
+    loadingOverlay.remove();
   }
 
   Future<void> _saveAnswerHistory(
@@ -209,18 +220,6 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   void _validateAnswer(int selectedAnswer) async {
-    loadingOverlay = OverlayEntry(
-      builder: (context) => Positioned(
-        top: MediaQuery.of(context).size.height / 2 - 20,
-        left: MediaQuery.of(context).size.width / 2 - 20,
-        child: const CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(ColorHelper.primaryColor),
-        ),
-      ),
-    );
-
-    Overlay.of(context).insert(loadingOverlay);
-
     _timer.cancel();
     bool isCorrect = selectedAnswer == _questionData.solution;
     if (isCorrect) {

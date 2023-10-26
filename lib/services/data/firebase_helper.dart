@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'string_helper.dart';
+import '../../helpers/string_helper.dart';
 
-class FirebaseHelper {
+class FirebaseService {
   final CollectionReference userScoresRef = FirebaseFirestore.instance
       .collection(StringHelper.userScoresDatabaseName);
 
@@ -15,7 +15,21 @@ class FirebaseHelper {
           .where(StringHelper.userIdText, isEqualTo: userId)
           .get();
 
-      return querySnapshot.docs;
+      return querySnapshot;
+    } catch (e) {
+      showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
+    }
+  }
+
+  static Future<dynamic> getLeaderboarDataFirebase(
+      String databaseName, User user, Function showErrorDialog) async {
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection(StringHelper.userScoresDatabaseName)
+          .orderBy(StringHelper.totalScore, descending: true)
+          .get();
+
+      return querySnapshot;
     } catch (e) {
       showErrorDialog(StringHelper.loadingAnswerHistoryErrorMessage);
     }

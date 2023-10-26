@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quiz_app/helpers/firebase_helper.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
-import '../helpers/lazy_load.dart';
-import '../helpers/leaderboard_item.dart';
+import '../widgets/lazy_load/lazy_load.dart';
+import '../widgets/widget_screen/leaderboard_item.dart';
 import '../helpers/string_helper.dart';
 import '../main.dart';
+import '../services/data/firebase_helper.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   final User? user;
@@ -24,12 +24,16 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   late int totalScore;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
+    _initializeLeaderboardData();
+  }
+
+  void _initializeLeaderboardData() async {
     if (widget.user != null) {
-      leaderboardList = await FirebaseHelper.initializeFirebase(
+      var snapshot = await FirebaseService.getLeaderboarDataFirebase(
           StringHelper.userScoresDatabaseName, widget.user!, _showErrorDialog);
-      leaderboardList.map((doc) => doc.data()).toList();
+      leaderboardList = snapshot.docs.map((doc) => doc.data()).toList();
     } else {
       _userNotSignedIn();
     }

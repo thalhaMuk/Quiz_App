@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/main.dart';
-import '../helpers/dialog_helper.dart';
+import '../../helpers/dialog_helper.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../helpers/string_helper.dart';
+import '../../helpers/string_helper.dart';
 
 class Login {
   static final FirebaseAuth _auth = FirebaseAuth.instance;

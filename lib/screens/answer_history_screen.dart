@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quiz_app/helpers/hive_helper.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
-import '../helpers/answer_history_item.dart';
+import 'package:quiz_app/services/data/hive_helper.dart';
+import '../widgets/answer_history/answer_history_item.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
-import '../helpers/firebase_helper.dart';
-import '../helpers/lazy_load.dart';
+import '../widgets/lazy_load/lazy_load.dart';
 import '../main.dart';
+import '../services/data/firebase_helper.dart';
 
 class AnswerHistory extends StatefulWidget {
   final User? user;
@@ -33,13 +33,19 @@ class _AnswerHistoryState extends State<AnswerHistory> {
   }
 
   @override
-  Future<void> initState() async {
+  void initState() {
+    super.initState();
+    _initializeAnswerHistoryData();
+  }
+
+  Future<void> _initializeAnswerHistoryData() async {
     super.initState();
     if (widget.user != null) {
-      answerHistory = await FirebaseHelper.initializeFirebase(
+      var snapshot = await FirebaseService.initializeFirebase(
           StringHelper.databaseName, widget.user!, _showErrorDialog);
+      answerHistory = snapshot.docs.map((doc) => doc).toList();
     } else {
-      answerHistory = await HiveHelper.getAnswerHistoryFromHive(
+      answerHistory = await HiveService.getAnswerHistoryFromHive(
           StringHelper.databaseName, _showErrorDialog);
     }
     setState(() {

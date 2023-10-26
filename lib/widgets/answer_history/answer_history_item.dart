@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 
-import 'color_helper.dart';
-import 'string_helper.dart';
+import '../../helpers/color_helper.dart';
+import '../../helpers/string_helper.dart';
 
 class AnswerHistoryItem extends StatelessWidget {
   final String questionImageUrl;

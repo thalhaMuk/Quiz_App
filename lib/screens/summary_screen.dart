@@ -1,15 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive/hive.dart';
 import 'package:quiz_app/screens/leaderboard_screen.dart';
 import '../helpers/color_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../helpers/string_helper.dart';
 import '../main.dart';
-import '../widgets/opening_screen_widgets/opening_screen_app_bar.dart';
+import '../services/data/firebase_helper.dart';
+import '../services/data/hive_helper.dart';
+import '../widgets/opening_screen/opening_screen_app_bar.dart';
 import 'answer_history_screen.dart';
-import '../models/summary_data.dart';
 
 class SummaryScreen extends StatefulWidget {
   final User? user;
@@ -26,6 +25,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
   late int incorrectAnswers;
   bool isLoading = true;
   bool hiveBoxExists = true;
+  final FirebaseService firebaseHelper = FirebaseService();
+  final HiveService hiveHelper = HiveService();
 
   void _showErrorDialog(String message) {
     DialogHelper.showErrorDialog(context, message);
@@ -33,15 +34,14 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   Future<void> _getAnswerHistoryFromHive() async {
     try {
-      if (await Hive.boxExists(StringHelper.databaseName)) {
-        final answerHistoryBox =
-            Hive.box<LocalAnswerHistory>(StringHelper.databaseName);
-        List<LocalAnswerHistory> history = [];
-        for (var i = 0; i < answerHistoryBox.length; i++) {
-          history.add(answerHistoryBox.getAt(i)!);
-        }
+      var history = await HiveService.getAnswerHistoryFromHive(
+          StringHelper.databaseName, _showErrorDialog);
+      if (history.isNotEmpty) {
         totalQuestions = history.length;
-        correctAnswers = history.where((answer) => answer.isCorrect).length;
+        debugPrint(history[0].isCorrect.toString());
+        correctAnswers = history
+            .where((answer) => answer.isCorrect != null && answer.isCorrect!)
+            .length;
         incorrectAnswers = totalQuestions - correctAnswers;
         if (totalQuestions == 0) {
           hiveBoxExists = false;
@@ -60,15 +60,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   Future<void> _initializeFirebase() async {
     try {
-      var userId = widget.user?.uid;
-      var answerHistory = await FirebaseFirestore.instance
-          .collection(StringHelper.databaseName)
-          .where(StringHelper.userIdText, isEqualTo: userId)
-          .get();
+      var answerHistory = await FirebaseService.initializeFirebase(
+          StringHelper.databaseName, widget.user!, _showErrorDialog);
 
       totalQuestions = answerHistory.docs.length;
       correctAnswers = answerHistory.docs
-          .where((answer) => answer[StringHelper.isCorrectText])
+          .where((answer) => answer.data()?[StringHelper.isCorrectText] == true)
           .length;
       incorrectAnswers = totalQuestions - correctAnswers;
     } catch (e) {

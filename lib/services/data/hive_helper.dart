@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
-import '../models/summary_data.dart';
-import 'string_helper.dart';
+import '../../helpers/string_helper.dart';
+import '../../models/summary_data.dart';
 
-class HiveHelper {
+class HiveService {
   static Future<dynamic> getAnswerHistoryFromHive(
       String databaseName, Function showErrorDialog) async {
     try {
@@ -11,10 +11,7 @@ class HiveHelper {
         List<LocalAnswerHistory> history = [];
 
         for (var i = 0; i < answerHistoryBox.length; i++) {
-          var localHistory = answerHistoryBox.getAt(i);
-          if (localHistory != null) {
-            history.add(localHistory);
-          }
+          history.add(answerHistoryBox.getAt(i)!);
         }
 
         return history;
@@ -28,7 +25,9 @@ class HiveHelper {
 
   Future<int> getTotalScore() async {
     int totalScore = 0;
-    await Hive.openBox(StringHelper.userScoresDatabaseName);
+    if (!await Hive.boxExists(StringHelper.userScoresDatabaseName)) {
+      await Hive.openBox(StringHelper.userScoresDatabaseName);
+    }
     var hiveBox = Hive.box(StringHelper.userScoresDatabaseName);
     totalScore = hiveBox.get(StringHelper.defaultUsername) ?? 0;
     hiveBox.close();
@@ -36,7 +35,10 @@ class HiveHelper {
   }
 
   Future<void> updateScoreToDatabase(int newTotalScore) async {
-    await Hive.openBox(StringHelper.userScoresDatabaseName);
+    if (!await Hive.boxExists(StringHelper.userScoresDatabaseName)) {
+      await Hive.openBox(StringHelper.userScoresDatabaseName);
+    }
+    var temp = await Hive.openBox(StringHelper.userScoresDatabaseName);
     final scoreBox = Hive.box(StringHelper.userScoresDatabaseName);
     scoreBox.put(StringHelper.defaultUsername, newTotalScore);
   }

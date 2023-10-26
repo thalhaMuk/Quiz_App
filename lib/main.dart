@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz_app/firebase_options.dart';
+import 'package:quiz_app/services/data/firebase_options.dart';
 import 'package:quiz_app/helpers/color_helper.dart';
-import 'package:quiz_app/widgets/opening_screen_widgets/opening_screen_app_bar.dart';
+import 'package:quiz_app/widgets/opening_screen/opening_screen_app_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'auth/login.dart';
-import 'auth/logout.dart';
+import 'services/auth/login.dart';
+import 'services/auth/logout.dart';
 import 'helpers/string_helper.dart';
 import 'models/summary_data.dart';
 import 'screens/question_screen.dart';
@@ -21,6 +21,7 @@ void main() async {
       LocalAnswerHistoryAdapter();
   Hive.registerAdapter(localAnswerHistoryAdapter);
   await Hive.openBox<LocalAnswerHistory>(StringHelper.databaseName);
+  await Hive.openBox(StringHelper.userScoresDatabaseName);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MaterialApp(
     title: StringHelper.appName,
@@ -33,8 +34,8 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key, this.firebaseUser}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    String user =
-        firebaseUser?.displayName?.split(' ')[0] ?? StringHelper.defaultUsername;
+    String user = firebaseUser?.displayName?.split(' ')[0] ??
+        StringHelper.defaultUsername;
     return MaterialApp(
       home: Scaffold(
         appBar: PreferredSize(

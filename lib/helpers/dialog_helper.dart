@@ -13,6 +13,7 @@ class DialogHelper {
       Function restartGame,
       User? user) {
     showDialog(
+      barrierDismissible: false,
       context: passedContext,
       builder: (context) {
         return AlertDialog(
@@ -69,6 +70,7 @@ class DialogHelper {
 
   static void showErrorDialog(BuildContext passedContext, String errorMessage) {
     showDialog(
+      barrierDismissible: false,
       context: passedContext,
       builder: (context) {
         return AlertDialog(
@@ -89,6 +91,7 @@ class DialogHelper {
 
   static void showQuitGameDialog(BuildContext passedContext, User? user) {
     showDialog(
+      barrierDismissible: false,
       context: passedContext,
       builder: (context) {
         return AlertDialog(
@@ -121,6 +124,7 @@ class DialogHelper {
   static void showEndGameDialog(BuildContext passedContext, User? user,
       userScore, correctAnswersCount, wrongAnswersCount) {
     showDialog(
+      barrierDismissible: false,
       context: passedContext,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -168,6 +172,7 @@ class DialogHelper {
       Function startTimer,
       Function restartGame) {
     showDialog(
+      barrierDismissible: false,
       context: passedContext,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -205,6 +210,7 @@ class DialogHelper {
       int correctAnswersCount,
       int wrongAnswersCount) {
     showDialog(
+      barrierDismissible: false,
       context: passedContext,
       builder: (context) {
         return AlertDialog(
@@ -254,6 +260,7 @@ class DialogHelper {
   static Future<bool?> showCongratulationsPopup(
       BuildContext context, String totalScore) {
     return showDialog<bool>(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
