@@ -1,3 +1,5 @@
+import '../helpers/constant_helper.dart';
+
 class QuestionData {
   final String question;
   final int solution;
@@ -6,8 +8,8 @@ class QuestionData {
 
   factory QuestionData.fromJson(Map<String, dynamic> json) {
     return QuestionData(
-      question: json['question'] as String,
-      solution: json['solution'] as int,
+      question: json[ConstantHelper.questionText] as String,
+      solution: json[ConstantHelper.solutionText] as int,
     );
   }
 }

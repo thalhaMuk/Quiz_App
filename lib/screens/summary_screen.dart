@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app/screens/leaderboard_screen.dart';
 import '../helpers/color_helper.dart';
+import '../helpers/constant_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../helpers/logger.dart';
 import '../helpers/string_helper.dart';
@@ -36,7 +37,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   Future<void> _getAnswerHistoryFromHive() async {
     try {
       var history = await HiveService.getAnswerHistoryFromHive(
-          StringHelper.databaseName, _showErrorDialog);
+          ConstantHelper.databaseName, _showErrorDialog);
       if (history.isNotEmpty) {
         totalQuestions = history.length;
         debugPrint(history[0].isCorrect.toString());
@@ -62,11 +63,12 @@ class _SummaryScreenState extends State<SummaryScreen> {
   Future<void> _initializeFirebase() async {
     try {
       var answerHistory = await FirebaseService.initializeFirebase(
-          StringHelper.databaseName, widget.user!, _showErrorDialog);
+          ConstantHelper.databaseName, widget.user!, _showErrorDialog);
 
-      totalQuestions = answerHistory.docs[0]['answerHistory'].length;
-      correctAnswers = answerHistory.docs[0]['answerHistory']
-          .where((answer) => answer?[StringHelper.isCorrectText] == true)
+      totalQuestions =
+          answerHistory.docs[0][ConstantHelper.answerHistory].length;
+      correctAnswers = answerHistory.docs[0][ConstantHelper.answerHistory]
+          .where((answer) => answer?[ConstantHelper.isCorrectText] == true)
           .length;
       incorrectAnswers = totalQuestions - correctAnswers;
     } catch (e) {

@@ -8,7 +8,6 @@ class StringHelper {
   static const String failedSignInMessage =
       'Failed to sign in. Please try again later. %s';
   static const String playNowDescription = 'Play now and Let\'s quiz!';
-  static const String databaseName = 'userAnswers';
   static const String defaultUsername = 'User';
 
   static const String webNotConfiguredError =
@@ -50,9 +49,6 @@ class StringHelper {
   static const String submitButtonText = 'Submit';
   static const String enterNumberErrorMessage = 'Please enter a number!';
 
-  static const String appIconPath = 'assets/icon.png';
-
-  static const String apiURL = 'https://marcconrad.com/uob/smile/api.php';
   static const String failToLoadQuestionErrorMessage =
       'Failed to load question';
 
@@ -64,12 +60,6 @@ class StringHelper {
   static const String goBackText = 'Go Back';
   static const String loadingAnswerHistoryErrorMessage =
       'Error loading data answer history.';
-
-  static const String isCorrectText = 'isCorrect';
-  static const String userIdText = 'userId';
-  static const String questionText = 'question';
-  static const String selectedAnswerText = 'selectedAnswer';
-  static const String timestampText = 'timestamp';
 
   static const String loadingQuestionErrorMessage =
       'Failed to load question. Please try again later.';
@@ -111,18 +101,14 @@ class StringHelper {
   static const String signinError =
       'Failed to sign in. Please try again later.';
   static const String updatingAnswerError = 'Error updating user score';
-  static const String totalScoreText = 'score';
   static const String firebaseSyncError = 'Error syncing with Firebase';
-  static const String milestoneTitle =
-      'Congratulations!!! You have scored ';
+  static const String milestoneTitle = 'Congratulations!!! You have scored ';
   static const String shareText =
       'I achieved a milestone in the quiz app! Check it out!';
   static const String goLeaderboardButtonText = 'View leaderboard';
   static const String notLoggedInMessage =
       'Please sign in to view the leaderboard';
   static const String okButtonText = 'View leaderboard';
-  static const String username = 'username';
-  static const String totalScore = 'totalScore';
   static const String milestoneText =
       'You have achieved a milestone! Do you want to share it on social media?';
   static const String appStartLogger = 'Application initialized';
@@ -130,10 +116,12 @@ class StringHelper {
   static const String mountingStart = 'Screen loading initialized';
   static const String startingDatabaseSearch = 'Searching database...';
   static const String endDatabaseSearch = 'Got data from database';
-  static const String databaseSearchError = 'An error occured when searching data';
+  static const String databaseSearchError =
+      'An error occured when searching data';
   static const String updatingTodatabase = 'Updating data in database';
   static const String updatedTodatabase = 'Updated data in database';
   static const String savingTodatabase = 'Saving data in database';
   static const String savedTodatabase = 'Saved data in database';
-  static const String loadingLeaderboardError = 'Error loading leaderboard data';
+  static const String loadingLeaderboardError =
+      'Error loading leaderboard data';
 }

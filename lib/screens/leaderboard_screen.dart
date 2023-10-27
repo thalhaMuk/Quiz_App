@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../helpers/color_helper.dart';
+import '../helpers/constant_helper.dart';
 import '../helpers/dialog_helper.dart';
 import '../helpers/logger.dart';
 import '../widgets/lazy_load/lazy_load.dart';
@@ -35,7 +36,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   void _initializeLeaderboardData() async {
     if (widget.user != null) {
       var snapshot = await FirebaseService.getLeaderboarDataFirebase(
-          StringHelper.databaseName, widget.user!, _showErrorDialog);
+          ConstantHelper.databaseName, widget.user!, _showErrorDialog);
       leaderboardList = snapshot.docs.map((doc) => doc.data()).toList();
     } else {
       _userNotSignedIn();
@@ -54,8 +55,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       itemCount: leaderboardList.length,
       itemBuilder: (context, index) {
         var localHistory = leaderboardList[index];
-        var username = localHistory[StringHelper.username];
-        var totalScore = localHistory[StringHelper.totalScore];
+        var username = localHistory[ConstantHelper.username];
+        var totalScore = localHistory[ConstantHelper.totalScore];
         var position = index + 1;
         return LazyLoad(
           child: LeaderboardItem(

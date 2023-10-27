@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quiz_app/helpers/string_helper.dart';
 import 'package:quiz_app/screens/summary_screen.dart';
 import 'package:quiz_app/services/data/hive_helper.dart';
+import '../helpers/constant_helper.dart';
 import '../helpers/logger.dart';
 import '../widgets/answer_history/answer_history_item.dart';
 import '../helpers/color_helper.dart';
@@ -44,11 +45,11 @@ class _AnswerHistoryState extends State<AnswerHistory> {
   Future<void> _initializeAnswerHistoryData() async {
     if (widget.user != null) {
       var snapshot = await FirebaseService.initializeFirebase(
-          StringHelper.databaseName, widget.user!, _showErrorDialog);
+          ConstantHelper.databaseName, widget.user!, _showErrorDialog);
       answerHistory = snapshot.docs.map((doc) => doc.data()).toList()[0]['answerHistory'];
     } else {
       answerHistory = await HiveService.getAnswerHistoryFromHive(
-          StringHelper.databaseName, _showErrorDialog);
+          ConstantHelper.databaseName, _showErrorDialog);
     }
     setState(() {
       isLoading = false;
@@ -61,10 +62,10 @@ class _AnswerHistoryState extends State<AnswerHistory> {
       itemBuilder: (context, index) {
         var localHistory = answerHistory[index];
         if (widget.user != null) {
-          isCorrect = localHistory[StringHelper.isCorrectText];
-          questionImageUrl = localHistory[StringHelper.questionText];
-          selectedAnswer = localHistory[StringHelper.selectedAnswerText];
-          timestamp = localHistory[StringHelper.timestampText];
+          isCorrect = localHistory[ConstantHelper.isCorrectText];
+          questionImageUrl = localHistory[ConstantHelper.questionText];
+          selectedAnswer = localHistory[ConstantHelper.selectedAnswerText];
+          timestamp = localHistory[ConstantHelper.timestampText];
         } else {
           isCorrect = localHistory.isCorrect;
           questionImageUrl = localHistory.question;
