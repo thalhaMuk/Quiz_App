@@ -213,7 +213,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomeScreen(firebaseUser: widget.user),
+                    builder: (context) => const HomeScreen(),
                   ),
                 );
               },
@@ -248,7 +248,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(firebaseUser: widget.user),
+                builder: (context) => const HomeScreen(),
               ),
             );
           },

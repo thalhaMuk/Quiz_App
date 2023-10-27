@@ -56,7 +56,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (passedContext) => HomeScreen(firebaseUser: user),
+                    builder: (passedContext) => const HomeScreen(),
                   ),
                 );
               },
@@ -109,7 +109,7 @@ class DialogHelper {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (passedContext) => HomeScreen(firebaseUser: user),
+                    builder: (passedContext) => const HomeScreen(),
                   ),
                 );
               },

@@ -34,7 +34,7 @@ class Login {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(firebaseUser: user),
+            builder: (context) => const HomeScreen(),
           ),
         );
       }
