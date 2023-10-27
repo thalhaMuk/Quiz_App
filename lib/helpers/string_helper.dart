@@ -8,7 +8,7 @@ class StringHelper {
   static const String failedSignInMessage =
       'Failed to sign in. Please try again later. %s';
   static const String playNowDescription = 'Play now and Let\'s quiz!';
-  static const String databaseName = 'answerHistory';
+  static const String databaseName = 'userAnswers';
   static const String defaultUsername = 'User';
 
   static const String webNotConfiguredError =

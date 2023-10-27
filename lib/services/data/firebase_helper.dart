@@ -4,8 +4,8 @@ import '../../helpers/logger.dart';
 import '../../helpers/string_helper.dart';
 
 class FirebaseService {
-  final CollectionReference userScoresRef = FirebaseFirestore.instance
-      .collection(StringHelper.userScoresDatabaseName);
+  final CollectionReference userAnswersRef =
+      FirebaseFirestore.instance.collection('userAnswers');
 
   static Future<dynamic> initializeFirebase(
       String databaseName, User user, Function showErrorDialog) async {
@@ -13,7 +13,7 @@ class FirebaseService {
     try {
       var userId = user.uid;
       var querySnapshot = await FirebaseFirestore.instance
-          .collection(databaseName)
+          .collection('userAnswers')
           .where(StringHelper.userIdText, isEqualTo: userId)
           .get();
       logger.d(StringHelper.endDatabaseSearch);
@@ -29,7 +29,7 @@ class FirebaseService {
     logger.d(StringHelper.startingDatabaseSearch);
     try {
       var querySnapshot = await FirebaseFirestore.instance
-          .collection(StringHelper.userScoresDatabaseName)
+          .collection('userAnswers')
           .orderBy(StringHelper.totalScore, descending: true)
           .get();
       logger.d(StringHelper.endDatabaseSearch);
@@ -43,7 +43,7 @@ class FirebaseService {
   Future<int> getTotalScore(String userId) async {
     logger.d(StringHelper.startingDatabaseSearch);
     int totalScore = 0;
-    var userDoc = await userScoresRef.doc(userId).get();
+    var userDoc = await userAnswersRef.doc(userId).get();
 
     if (userDoc.exists) {
       totalScore = userDoc[StringHelper.totalScore] ?? 0;
@@ -56,18 +56,11 @@ class FirebaseService {
       String userId, int newTotalScore, Function showErrorDialog) async {
     logger.d(StringHelper.updatingTodatabase);
     try {
-      var userScoreDoc = await userScoresRef.doc(userId).get();
-
+      var userScoreDoc = await userAnswersRef.doc(userId).get();
       if (userScoreDoc.exists) {
-        await userScoresRef.doc(userId).update({
+        await userAnswersRef.doc(userId).update({
           StringHelper.totalScore: newTotalScore,
-          StringHelper.timestampText: FieldValue.serverTimestamp(),
-        });
-      } else {
-        await userScoresRef.doc(userId).set({
-          StringHelper.userIdText: userId,
-          StringHelper.totalScore: newTotalScore,
-          StringHelper.timestampText: FieldValue.serverTimestamp(),
+          'lastUpdated': FieldValue.serverTimestamp(),
         });
       }
       logger.d(StringHelper.updatedTodatabase);
@@ -77,17 +70,25 @@ class FirebaseService {
     }
   }
 
-  Future<void> saveAnswerHistory(String userId, String question,
-      int selectedAnswer, bool isCorrect, Function showErrorDialog) async {
+  Future<void> saveAnswerHistory(String userId, String? username, String question,
+      int selectedAnswer, bool isCorrect, Function showErrorDialog, int totalscore) async {
     logger.d(StringHelper.savingTodatabase);
     try {
-      await FirebaseFirestore.instance.collection('answerHistory').add({
-        StringHelper.userIdText: userId,
-        StringHelper.questionText: question,
-        StringHelper.selectedAnswerText: selectedAnswer,
-        StringHelper.isCorrectText: isCorrect,
-        StringHelper.timestampText: FieldValue.serverTimestamp(),
-      });
+      await userAnswersRef.doc(userId).set({
+        'userId': userId,
+        'answerHistory': FieldValue.arrayUnion([
+          {
+            'isCorrect': isCorrect,
+            'question': question,
+            'selectedAnswer': selectedAnswer,
+            'timestamp': Timestamp.now(),
+          },
+        ]),
+        'totalScore': totalscore + 10,
+        'lastUpdated': Timestamp.now(),
+        'username': username,
+      }, SetOptions(merge: true));
+
       logger.d(StringHelper.savedTodatabase);
     } catch (e) {
       logger.d(StringHelper.errorText);

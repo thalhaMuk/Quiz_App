@@ -45,7 +45,7 @@ class _AnswerHistoryState extends State<AnswerHistory> {
     if (widget.user != null) {
       var snapshot = await FirebaseService.initializeFirebase(
           StringHelper.databaseName, widget.user!, _showErrorDialog);
-      answerHistory = snapshot.docs.map((doc) => doc).toList();
+      answerHistory = snapshot.docs.map((doc) => doc.data()).toList()[0]['answerHistory'];
     } else {
       answerHistory = await HiveService.getAnswerHistoryFromHive(
           StringHelper.databaseName, _showErrorDialog);
@@ -61,10 +61,10 @@ class _AnswerHistoryState extends State<AnswerHistory> {
       itemBuilder: (context, index) {
         var localHistory = answerHistory[index];
         if (widget.user != null) {
-          isCorrect = localHistory.data()[StringHelper.isCorrectText];
-          questionImageUrl = localHistory.data()[StringHelper.questionText];
-          selectedAnswer = localHistory.data()[StringHelper.selectedAnswerText];
-          timestamp = localHistory.data()[StringHelper.timestampText];
+          isCorrect = localHistory[StringHelper.isCorrectText];
+          questionImageUrl = localHistory[StringHelper.questionText];
+          selectedAnswer = localHistory[StringHelper.selectedAnswerText];
+          timestamp = localHistory[StringHelper.timestampText];
         } else {
           isCorrect = localHistory.isCorrect;
           questionImageUrl = localHistory.question;

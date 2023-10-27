@@ -17,9 +17,9 @@ class Logout {
               child: SizedBox(
                   height: 30, width: 30, child: CircularProgressIndicator())),
           barrierDismissible: false);
-      await googleSignIn.disconnect();
       await FirebaseFirestore.instance.clearPersistence();
       await FirebaseAuth.instance.signOut();
+      await googleSignIn.disconnect();
       if (!context.mounted) return;
       Navigator.pushReplacement(
         context,

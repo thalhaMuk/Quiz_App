@@ -110,8 +110,6 @@ class _QuestionScreenState extends State<QuestionScreen>
     totalScore = await _getTotalSCore();
     int newTotalScore = 10 + totalScore;
     if (widget.user != null) {
-      await firebaseHelper.updateScoreToDatabase(
-          widget.user!.uid, newTotalScore, _showErrorDialog);
     } else {
       await hiveHelper.updateScoreToDatabase(newTotalScore);
     }
@@ -121,8 +119,14 @@ class _QuestionScreenState extends State<QuestionScreen>
   Future<void> _saveAnswerHistory(
       String question, int selectedAnswer, bool isCorrect) async {
     if (widget.user != null) {
-      await firebaseHelper.saveAnswerHistory(widget.user!.uid, question,
-          selectedAnswer, isCorrect, _showErrorDialog);
+      await firebaseHelper.saveAnswerHistory(
+          widget.user!.uid,
+          widget.user!.displayName,
+          question,
+          selectedAnswer,
+          isCorrect,
+          _showErrorDialog,
+          totalScore);
     } else {
       await hiveHelper.saveAnswerHistory(question, selectedAnswer, isCorrect);
     }

@@ -35,7 +35,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   void _initializeLeaderboardData() async {
     if (widget.user != null) {
       var snapshot = await FirebaseService.getLeaderboarDataFirebase(
-          StringHelper.userScoresDatabaseName, widget.user!, _showErrorDialog);
+          StringHelper.databaseName, widget.user!, _showErrorDialog);
       leaderboardList = snapshot.docs.map((doc) => doc.data()).toList();
     } else {
       _userNotSignedIn();

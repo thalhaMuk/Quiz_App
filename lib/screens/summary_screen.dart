@@ -64,9 +64,9 @@ class _SummaryScreenState extends State<SummaryScreen> {
       var answerHistory = await FirebaseService.initializeFirebase(
           StringHelper.databaseName, widget.user!, _showErrorDialog);
 
-      totalQuestions = answerHistory.docs.length;
-      correctAnswers = answerHistory.docs
-          .where((answer) => answer.data()?[StringHelper.isCorrectText] == true)
+      totalQuestions = answerHistory.docs[0]['answerHistory'].length;
+      correctAnswers = answerHistory.docs[0]['answerHistory']
+          .where((answer) => answer?[StringHelper.isCorrectText] == true)
           .length;
       incorrectAnswers = totalQuestions - correctAnswers;
     } catch (e) {
