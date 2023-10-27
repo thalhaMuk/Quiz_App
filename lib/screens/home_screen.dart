@@ -1,13 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:quiz_app/helpers/color_helper.dart';
-import 'package:quiz_app/helpers/string_helper.dart';
-import 'package:quiz_app/widgets/opening_screen/opening_screen_app_bar.dart';
-import '../services/auth/login.dart';
-import '../services/auth/logout.dart';
-import 'question_screen.dart';
-import 'summary_screen.dart';
+import '../helpers/import_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

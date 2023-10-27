@@ -1,4 +1,4 @@
-import 'package:hive/hive.dart';
+import '../helpers/import_helper.dart';
 
 part './summary_data.g.dart';
 

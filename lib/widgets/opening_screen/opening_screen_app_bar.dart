@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:quiz_app/helpers/string_helper.dart';
-import '../../helpers/color_helper.dart';
-import '../../helpers/constant_helper.dart';
+import '../../helpers/import_helper.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});

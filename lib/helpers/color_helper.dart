@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import '../helpers/import_helper.dart';
 
 class ColorHelper {
   static const Color primaryColor = Colors.purpleAccent;

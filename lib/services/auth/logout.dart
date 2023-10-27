@@ -1,10 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:quiz_app/helpers/string_helper.dart';
-import '../../helpers/dialog_helper.dart';
-import '../../screens/home_screen.dart';
+import '../../helpers/import_helper.dart';
 
 class Logout {
   void signOut(BuildContext context) async {

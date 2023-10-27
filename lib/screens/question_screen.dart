@@ -1,17 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quiver/async.dart';
-import 'package:quiz_app/services/data/hive_helper.dart';
-import '../helpers/color_helper.dart';
-import '../helpers/logger.dart';
-import '../helpers/string_helper.dart';
-import '../models/question_data.dart';
-import '../services/api/api_service.dart';
-import '../helpers/dialog_helper.dart';
-import '../services/data/firebase_helper.dart';
-import '../widgets/question_screen/custom_keyboard.dart';
-import '../widgets/question_screen/question_screen_app_bar.dart';
-import 'package:share_plus/share_plus.dart';
+import '../helpers/import_helper.dart';
 
 class QuestionScreen extends StatefulWidget {
   final User? user;
@@ -280,7 +267,7 @@ class _QuestionScreenState extends State<QuestionScreen>
         child: Center(
           child: Column(
             children: [
-              CustomAppBar(
+              QuestionScreenAppBar(
                 user: user.split(' ')[0],
                 quizNumber: _correctAnswersCount + _wrongAnswersCount + 1,
                 userScore: _userScore,

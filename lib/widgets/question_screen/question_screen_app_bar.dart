@@ -1,9 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import '../../helpers/color_helper.dart';
-import '../../helpers/string_helper.dart';
+import '../../helpers/import_helper.dart';
 
-class CustomAppBar extends StatelessWidget {
+class QuestionScreenAppBar extends StatelessWidget {
   final String user;
   final int quizNumber;
   final int userScore;
@@ -12,7 +9,7 @@ class CustomAppBar extends StatelessWidget {
   final User? firebaseUser;
   final Function onEndGamePressed;
 
-  const CustomAppBar({
+  const QuestionScreenAppBar({
     Key? key,
     required this.user,
     required this.quizNumber,

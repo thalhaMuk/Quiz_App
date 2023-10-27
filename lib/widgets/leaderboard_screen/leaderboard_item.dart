@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:quiz_app/helpers/color_helper.dart';
+import '../../helpers/import_helper.dart';
 
 class LeaderboardItem extends StatelessWidget {
   final String username;

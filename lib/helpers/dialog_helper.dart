@@ -1,8 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:quiz_app/helpers/string_helper.dart';
-import '../screens/home_screen.dart';
-import '../screens/summary_screen.dart';
+import '../helpers/import_helper.dart';
 
 class DialogHelper {
   static void showResultDialog(

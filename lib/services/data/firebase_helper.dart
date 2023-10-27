@@ -1,8 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../helpers/constant_helper.dart';
-import '../../helpers/logger.dart';
-import '../../helpers/string_helper.dart';
+import '../../helpers/import_helper.dart';
 
 class FirebaseService {
   final CollectionReference userAnswersRef =

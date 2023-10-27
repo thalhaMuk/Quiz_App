@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-import '../../helpers/color_helper.dart';
-import '../../helpers/string_helper.dart';
+import '../../helpers/import_helper.dart';
 
 class CustomKeyboard extends StatefulWidget {
   final Function(int) onNumberPressed;

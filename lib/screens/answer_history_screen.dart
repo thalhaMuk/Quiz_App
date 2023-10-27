@@ -1,16 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quiz_app/helpers/string_helper.dart';
-import 'package:quiz_app/screens/summary_screen.dart';
-import 'package:quiz_app/services/data/hive_helper.dart';
-import '../helpers/constant_helper.dart';
-import '../helpers/logger.dart';
-import '../widgets/answer_history/answer_history_item.dart';
-import '../helpers/color_helper.dart';
-import '../helpers/dialog_helper.dart';
-import '../widgets/lazy_load/lazy_load.dart';
-import '../services/data/firebase_helper.dart';
+import '../helpers/import_helper.dart';
 
 class AnswerHistory extends StatefulWidget {
   final User? user;

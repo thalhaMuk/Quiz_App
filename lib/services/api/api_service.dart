@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:quiz_app/helpers/string_helper.dart';
-import '../../helpers/constant_helper.dart';
+import '../../helpers/import_helper.dart';
 
 class ApiService {
   static Future<Map<String, dynamic>> fetchQuestion() async {
     var url = Uri.parse(ConstantHelper.apiURL);
-    final response = await http.get(url);
+    final response = await get(url);
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {

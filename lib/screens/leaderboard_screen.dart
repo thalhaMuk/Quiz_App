@@ -1,14 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../helpers/color_helper.dart';
-import '../helpers/constant_helper.dart';
-import '../helpers/dialog_helper.dart';
-import '../helpers/logger.dart';
-import '../widgets/lazy_load/lazy_load.dart';
-import '../widgets/leaderboard_screen/leaderboard_item.dart';
-import '../helpers/string_helper.dart';
-import '../services/data/firebase_helper.dart';
-import 'summary_screen.dart';
+import '../helpers/import_helper.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   final User? user;
