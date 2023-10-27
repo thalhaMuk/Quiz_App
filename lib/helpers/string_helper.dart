@@ -112,7 +112,6 @@ class StringHelper {
       'Failed to sign in. Please try again later.';
   static const String updatingAnswerError = 'Error updating user score';
   static const String totalScoreText = 'score';
-  static const String userScoresDatabaseName = 'userScores';
   static const String firebaseSyncError = 'Error syncing with Firebase';
   static const String milestoneTitle =
       'Congratulations!!! You have scored ';

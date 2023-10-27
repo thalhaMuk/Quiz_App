@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../helpers/string_helper.dart';
 import '../../models/summary_data.dart';
 import '../../helpers/logger.dart';
@@ -30,20 +31,19 @@ class HiveService {
     }
   }
 
-  Future<int> getTotalScore() async {
+ Future<int> getTotalScore() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     logger.d(StringHelper.startingDatabaseSearch);
-    int totalScore = 0;
-    var hiveBox = Hive.box<int>(StringHelper.userScoresDatabaseName);
-    totalScore = hiveBox.get(StringHelper.defaultUsername) ?? 0;
+    int totalScore = prefs.getInt(StringHelper.defaultUsername) ?? 0;
     logger.d(StringHelper.endDatabaseSearch);
     return totalScore;
   }
 
   Future<void> updateScoreToDatabase(int newTotalScore) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       logger.d(StringHelper.updatingTodatabase);
-      final scoreBox = Hive.box<int>(StringHelper.userScoresDatabaseName);
-      scoreBox.put(StringHelper.defaultUsername, newTotalScore);
+      await prefs.setInt(StringHelper.defaultUsername, newTotalScore);
       logger.d(StringHelper.updatedTodatabase);
     } catch (e) {
       logger.d(StringHelper.errorText);

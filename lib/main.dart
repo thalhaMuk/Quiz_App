@@ -16,7 +16,6 @@ void main() async {
       LocalAnswerHistoryAdapter();
   Hive.registerAdapter(localAnswerHistoryAdapter);
   await Hive.openBox<LocalAnswerHistory>(StringHelper.databaseName);
-  await Hive.openBox<int>(StringHelper.userScoresDatabaseName);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   logger.d(StringHelper.appStartLogger);
   runApp(const MaterialApp(
