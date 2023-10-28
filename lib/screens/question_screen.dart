@@ -31,7 +31,8 @@ class _QuestionScreenState extends State<QuestionScreen>
     logger.d(StringHelper.mountingStart);
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadQuestion();
+    _loadQuestion();  
+    _getTotalScore(); 
     logger.d(StringHelper.mountingEnd);
   }
 
@@ -74,11 +75,13 @@ class _QuestionScreenState extends State<QuestionScreen>
     }
   }
 
-  Future<dynamic> _getTotalSCore() async {
+  Future<dynamic> _getTotalScore() async {
     if (widget.user != null) {
-      return await firebaseHelper.getTotalScore(widget.user!.uid);
+      totalScore = await firebaseHelper.getTotalScore(widget.user!.uid);
+      return totalScore;
     } else {
-      return await hiveHelper.getTotalScore();
+      totalScore = await hiveHelper.getTotalScore();
+      return totalScore;
     }
   }
 
@@ -94,7 +97,7 @@ class _QuestionScreenState extends State<QuestionScreen>
     );
     Overlay.of(context).insert(loadingOverlay);
 
-    totalScore = await _getTotalSCore();
+    totalScore = await _getTotalScore();
     int newTotalScore = 10 + totalScore;
     if (widget.user != null) {
     } else {

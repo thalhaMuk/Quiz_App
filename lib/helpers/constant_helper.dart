@@ -12,7 +12,7 @@ class ConstantHelper {
   static const String appIconPath = 'assets/icon.png';
   static const String answerHistory = 'answerHistory';
   static const String lastUpdated = 'lastUpdated';
-  static const String solutionText = 'lastUpdated';
+  static const String solutionText = 'solution';
   static const String androidIconPath = '@mipmap/ic_launcher';
   static const String channelId = 'high_importance_channel';
   static const String channelName = 'QuizAppChannel';
