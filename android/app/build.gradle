@@ -25,10 +25,11 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.quiz_app"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -44,10 +45,11 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.quiz_app"
+        multiDexEnabled true
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion 33
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -65,4 +67,11 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    implementation "androidx.window:window:1.1.0"
+    implementation "androidx.window:window-java:1.1.0"
+    implementation "androidx.window:window-rxjava2:1.1.0"
+    implementation "androidx.window:window-rxjava3:1.1.0"
+    implementation "androidx.window:window-testing:1.1.0"
+}

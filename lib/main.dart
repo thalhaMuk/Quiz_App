@@ -1,8 +1,11 @@
-import '../../helpers/import_helper.dart';
+import 'helpers/import_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final NotificationService notificationService = NotificationService();
+  await notificationService.initialize();
   final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  WidgetsBinding.instance.addObserver(notificationService);
   Hive.init(appDocumentDirectory.path);
   final LocalAnswerHistoryAdapter localAnswerHistoryAdapter =
       LocalAnswerHistoryAdapter();

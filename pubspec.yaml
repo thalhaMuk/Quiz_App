@@ -46,7 +46,8 @@ dependencies:
   cloud_firestore: ^4.9.3
   google_sign_in: ^6.1.5
   fidenz_flutter_boilerplate: ^0.0.6
-
+  flutter_local_notifications: ^16.1.0
+  timezone: ^0.9.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
